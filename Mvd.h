@@ -86,6 +86,14 @@ extern int MVD_fl[];
 #define n_char_b 50
 
 //01.10.20 YN -\\//-
+
+extern float frd_T1;
+extern float frd_T2;
+extern float frd_Tx;
+extern float back_T1;
+extern float back_T2;
+extern float back_Tx;
+
 struct s_mass_time
 {
     float mass_old; //M1

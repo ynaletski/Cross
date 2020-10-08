@@ -558,6 +558,7 @@ m_wait:
       sw_dlv_liq=-1;
       f_reg_cmn(10);
    }
+   finish:
    if( MVD_t_rslt[0]>0)
    {
       MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);
@@ -570,6 +571,14 @@ m_wait:
       {
          MmiGotoxy(0,4);    MmiPuts("   Старт разрешен => назад    ");
       }
+      else if(State_SLV == finished)
+      {
+         MmiGotoxy(0,4);    MmiPuts("    Измерение => закончено    ");
+         State_SLV = Cmd_brk;
+      }
+
+      MmiGotoxy(0,5);  
+      MmiPrintf("Масса тотал:  %8f   ",s_MVD[0].MassT);
 
       MmiGotoxy(0,6);  MmiPuts("     Вперед    |    Назад     ");
       MmiGotoxy(0,7);  MmiPuts(" ------------- | ------------ ");
@@ -597,6 +606,34 @@ m_wait:
    else goto m_wait;
 
    break;
+
+   //------------
+
+   case 6663:
+
+   MVD_t_rslt[0]=0;
+   time_t_snd=TimeStamp;
+   MmiGotoxy(0,4);    MmiPuts(" Остановка счета расходомера  ");
+   // Stop totalizers
+   if( f_MVD_WR((int)0,(int)MVD_WR_C,(int) 2,(int)0,(long int) 0,(float)0)== 0)
+   { // ошибка при отправке посылки MVD
+      goto m_err_mvd;
+   }
+   sw_dlv_liq = 6664;
+   break;
+
+   //------------
+
+   case 6664:
+   if(key==ESC)
+   {
+      MmiGotoxy(0,4);   MmiPuts(list_avt[31]);  //" Нажата кнопка   ESC          ",//31
+      result_dlv=1; //  Нажата кнопка   ESC
+      State_SLV=Cmd_brk;
+      sw_dlv_liq=-1;
+      f_reg_cmn(10);
+   }
+   goto finish;
 
 //-------- YN -//\\-
 

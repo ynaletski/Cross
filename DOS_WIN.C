@@ -625,7 +625,7 @@ void f_prn_MassSt_rcv()
 void f_prn_error()
 {
    f_clr_scr_MMI();
-   MmiGotoxy(0,0);  MmiPrintf("АСН %d.",n_ASN);
+   //01.10.20 YN - MmiGotoxy(0,0);  MmiPrintf("АСН %d.",n_ASN);
 
 #if( Test == 0)
    if(flag_mvd_ton)
@@ -634,8 +634,14 @@ void f_prn_error()
   MmiGotoxy(1,1);  MmiPrintf("  Система учета отпуска  ");
   MmiGotoxy(1,2);  MmiPrintf("      биокомпонента      ");
 #else
-  MmiGotoxy(1,1);  MmiPrintf("  Система учета отпуска  ");
-  MmiGotoxy(1,2);  MmiPrintf("      нефтепродуктов     ");
+  //01.10.20 YN -\\//- was:
+  //MmiGotoxy(1,1);  MmiPrintf("  Система учета отпуска  ");
+  //MmiGotoxy(1,2);  MmiPrintf("      нефтепродуктов     ");
+  //now:
+  MmiGotoxy(0,0);  MmiPrintf("             ВРФ             ");
+  MmiGotoxy(0,1);  MmiPrintf("  Программа для перекидного  ");
+  MmiGotoxy(0,2);  MmiPrintf("         устройства          ");
+  //-------- YN -//\\-
 #endif
 
   MmiGotoxy(0,3);  MmiPuts(s_empty);
@@ -2976,6 +2982,13 @@ m_120p:
           else
             MmiPrintf("%02d.%02d.%02d   %02d:%02d:%02d       " ,day,month,year-2000 ,hour,min,sec);
         }
+
+        //01.10.20 YN -\\//-
+        else if(key=='4')
+        {
+          goto m_m3_3;
+        }
+        //-------- YN -//\\-
 
         break;
  /*========================================*/

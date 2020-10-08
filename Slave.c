@@ -367,17 +367,17 @@ float *list_Slv_flt[]={
 &s_frd.mass_x,       // 38 F1076
 &s_frd.mass_new,     // 39 F1078
 
-&s_frd.t_old,        // 40 F1080
-&s_frd.t_x,          // 41 F1082
-&s_frd.t_new,        // 42 F1084
+&frd_T1,             // 40 F1080
+&frd_Tx,             // 41 F1082
+&frd_T2,             // 42 F1084
 
 &s_back.mass_old,    // 43 F1086
 &s_back.mass_x,      // 44 F1088
 &s_back.mass_new,    // 45 F1090
 
-&s_back.t_old,       // 46 F1092
-&s_back.t_x,         // 47 F1094
-&s_back.t_new,       // 48 F1096
+&back_T1,             // 46 F1092
+&back_Tx,             // 47 F1094
+&back_T2,             // 48 F1096
 
 NULL
 
@@ -777,6 +777,7 @@ void fun_tim_u(void)
       {
         flag_motion = fl_frd_x;
         s_frd.t_x = TimeStamp - start_time;
+        //frd_Tx = (float)s_frd.t_x; если приводить здесь иногда зависает
       }
     }
 
@@ -794,6 +795,7 @@ void fun_tim_u(void)
       {
         flag_motion = fl_back_x;
         s_back.t_x = TimeStamp - start_time;
+        //back_Tx = (float)s_back.t_x; если приводить здесь иногда зависает
       }
     }
 
@@ -2091,7 +2093,9 @@ int f_enable_start()
     //sw_fst=0; //вроде не надо
     sw_mmi=666;
     s_frd.t_new=s_frd.t_x=s_frd.t_old=0;
+    frd_T1=frd_T2=frd_Tx=0.0;
     s_back.t_new=s_back.t_x=s_back.t_old=0;
+    back_T1=back_T2=back_Tx=0.0;
     s_frd.mass_new=s_frd.mass_x=s_frd.mass_old=0.0;
     s_back.mass_new=s_back.mass_x=s_back.mass_old=0.0;
     if(flag_motion != 0) flag_motion = 0; //начало с первой точки 

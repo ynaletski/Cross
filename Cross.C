@@ -806,7 +806,7 @@ struct dis_set_MMI ds_list1[]=
   255,
   T_INT,
 //----3-----------
-  list1_dsr,
+  /*list1_dsr,
   9,
   &n_ASN,
   0,
@@ -832,11 +832,11 @@ struct dis_set_MMI ds_list1[]=
   &flag_prok ,
   -1,
   3,
-  T_INT,
+  T_INT,*/
 /*----------------*/
 //-----------
 //----7-----------
-  list1_dsr,
+  /*list1_dsr,
   158,
   &Flow_nom,
   0,
@@ -904,30 +904,30 @@ struct dis_set_MMI ds_list1[]=
   &analog_offset[0],
   -BIG_P,
   BIG_P,
-  T_FLOAT,
+  T_FLOAT,*/
 /*----------------*/
-  list1_dsr,
+ /* list1_dsr,
   94,
   &analog_offset[1],
   -BIG_P,
   BIG_P,
-  T_FLOAT,
+  T_FLOAT,*/
 /*----------------*/
-  list1_dsr,
+  /*list1_dsr,
   157,
   &CL_val[1],
   -BIG_P,
   BIG_P,
-  T_FLOAT,
+  T_FLOAT,*/
 /*----------------*/
-  list1_dsr,
+ /* list1_dsr,
   99,
   &CL_val_L[1],
   -BIG_P,
   BIG_P,
-  T_FLOAT,
+  T_FLOAT,*/
 /*----------------*/
-  list1_dsr,
+  /*list1_dsr,
   156,
   &CL_val[0],
   -BIG_P,
@@ -1214,7 +1214,7 @@ struct dis_set_MMI ds_list1[]=
   &mski_inp12,
   0,
   8,
-  T_INT,
+  T_INT,*/
 //-----------
 //----------------
 //-----------
@@ -1225,7 +1225,7 @@ struct dis_set_MMI ds_list1[]=
   1.,
   T_INT,
 //-----------
-  list1_dsr,
+  /*list1_dsr,
   6,
   &I7017C[0].status,
   0.,
@@ -1270,7 +1270,7 @@ struct dis_set_MMI ds_list1[]=
   1.,
   T_INT,
 //-----------
-#endif
+#endif*/
   list1_dsr,
   37,
   &WDOG[0].status,
@@ -1280,7 +1280,7 @@ struct dis_set_MMI ds_list1[]=
 //-----------
 
 //-----------
-  list1_dsr,
+ /* list1_dsr,
   151,
   &Drive_SV_beg[0],
   0.,
@@ -1391,7 +1391,7 @@ struct dis_set_MMI ds_list1[]=
   &Cor_max,
   -BIG_P,
   BIG_P,
-  T_FLOAT,
+  T_FLOAT,*/
 /*----------------*/
 
 //----------------
@@ -1402,7 +1402,7 @@ struct dis_set_MMI ds_list1[]=
   1,
   T_INT,
   //-----------///uuu/////////////////
-  list1_dsr,
+  /*list1_dsr,
   166,               // ë£≠.'äéçë.ç.' N ¢Â.
   &num_in16,
   0,
@@ -1428,7 +1428,7 @@ struct dis_set_MMI ds_list1[]=
   &num_out10,
   0,
   16,
-  T_INT,
+  T_INT,*/
 //-----------
 //-----------
   NULL,

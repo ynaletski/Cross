@@ -3531,51 +3531,81 @@ void  f_flow_chk()
 }
 //-----------------------------
 //01.10.20 YN -\\//-
+
+float frd_T1=0.0;
+float frd_T2=0.0;
+float frd_Tx=0.0;
+float back_T1=0.0;
+float back_T2=0.0;
+float back_Tx=0.0;
+
 void f_lin_intrpl()
 {
 
-  float ftmp_new=0,ftmp_x=0,ftmp_old=0;
-
   if(State_SLV == en_start) //62 регистр I8 enable старт разрешен для перекидки
   {
+
+
     s_frd.t_new = tim_snd_MVD - start_time;
+    frd_T2 = (float)s_frd.t_new;
     s_frd.mass_new = s_MVD[0].MassT;
+
+
     //вычисление массы s_frd.mass_x методом линейной интерполяции движение перекидки вперед(к весам)
-    if(flag_motion == fl_frd_x && s_frd.mass_new > s_frd.mass_old && s_frd.t_new > s_frd.t_old)
+    if(flag_motion == fl_frd_x && s_frd.mass_new > s_frd.mass_old &&
+                    s_frd.t_new > s_frd.t_old && s_frd.t_new > s_frd.t_x)
     {
       State_SLV = en_start_pause;
-      ftmp_new = (float)s_frd.t_new;
-      ftmp_x = (float)s_frd.t_x;
-      ftmp_old = (float)s_frd.t_old;
-      s_frd.mass_x = s_frd.mass_old + ((s_frd.mass_new-s_frd.mass_old) * ((ftmp_x-ftmp_old) / (ftmp_new-ftmp_old)));
+      frd_Tx = (float)s_frd.t_x;
+      s_frd.mass_x = s_frd.mass_old + ((s_frd.mass_new-s_frd.mass_old) * ((frd_Tx-frd_T1) / (frd_T2-frd_T1)));
       goto end;
     }
+
+
+    if(flag_motion == fl_frd_x) goto end;
     s_frd.t_old = s_frd.t_new;
+    frd_T1 = (float)s_frd.t_old;
     s_frd.mass_old = s_frd.mass_new;
+
+
   }
+  
   //---------------
   else if(State_SLV == en_start_pause) //63 регистр I8 enable старт на паузе пока не дойдет до второго концевика
   {
     s_back.t_old = tim_snd_MVD - start_time;
+    back_T1 = (float)s_back.t_old;
     s_back.mass_old = s_MVD[0].MassT;
   }
   //---------------
+
   else if(State_SLV == en_start_back) //64 регистр I8 enable старт разрешен для перекидки в обратном направлении
   {
+
+
     s_back.t_new = tim_snd_MVD - start_time;
+    back_T2 = (float)s_back.t_new;
     s_back.mass_new = s_MVD[0].MassT;
+
+
     //вычисление массы s_frd.mass_x методом линейной интерполяции движение перекидки назад(в бак)
-    if(flag_motion == fl_back_x && s_back.mass_new > s_back.mass_old && s_back.t_new > s_back.t_old)
-    {
-      State_SLV = Cmd_brk;
-      ftmp_new = (float)s_back.t_new;
-      ftmp_x = (float)s_back.t_x;
-      ftmp_old = (float)s_back.t_old;
-      s_back.mass_x = s_back.mass_old + ((s_back.mass_new-s_back.mass_old) * ((ftmp_x-ftmp_old) / (ftmp_new-ftmp_old)));
+    if(flag_motion == fl_back_x && s_back.mass_new > s_back.mass_old &&
+                    s_back.t_new > s_back.t_old && s_back.t_new > s_back.t_x)
+    {      
+      back_Tx = (float)s_back.t_x;
+      s_back.mass_x = s_back.mass_old + ((s_back.mass_new-s_back.mass_old) * ((back_Tx-back_T1) / (back_T2-back_T1)));
+      sw_dlv_liq = 6663; //переход к останову счета расходомера
+      State_SLV = finished;
       goto end;
     }
+
+
+    if(flag_motion == fl_back_x) goto end;
     s_back.t_old = s_back.t_new;
+    back_T1 = (float)s_back.t_old;
     s_back.mass_old = s_back.mass_new;
+
+    
   }
   //---------------
   else if(State_SLV == Cmd_brk && flag_motion != 0) 
