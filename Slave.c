@@ -761,48 +761,77 @@ void f_send_slv1()
 // ==================================================
 int nn_comb=0;
 
+int choice=0;
+#define ch_time       1 //измерение времении пролета перекидки туда обратно
+#define ch_weigher    2 //вычисление интерполированной массы при проливке на весы
+#define ch_confront   3 //вычисление интерполированной массы и объема методом сличения
+
 void fun_tim_u(void)
 {
-  //01.10.20 YN added: Перебор в прерывании через переменную intrpt_nb if else
-                    //фунцкция вызывается раз в 0.5 мс
-  if(intrpt_nb == 0)
+  //01.10.20 YN added: Перебор в прерывании через переменную intrpt_nb 
+                    //фунцкция вызывается раз в 0.1 мс 
+
+  if(intrpt_nb<10) intrpt_nb++; //9 раз запускает измерение на 10-ый смотрит верхний контроллер
+  else intrpt_nb=0;
+
+  if(intrpt_nb != 0)
   {
-    intrpt_nb=1;
-    di_1 = GetDi1();
-    di_2 = GetDi2();
     
-    if(State_SLV == en_start && flag_motion == 0)
+    switch (choice)
     {
-      if(di_1 && di_2) 
-      {
-        flag_motion = fl_frd_x;
-        s_frd.t_x = TimeStamp - start_time;
-        //frd_Tx = (float)s_frd.t_x; если приводить здесь иногда зависает
-      }
-    }
+    case ch_weigher:
 
-    else if(State_SLV == en_start_pause && flag_motion == fl_frd_x)
-    {
-      if(di_1 && di_2 == 0)
+      di_1 = GetDi1();
+      di_2 = GetDi2();
+    
+      if(State_SLV == en_start && flag_motion == 0)
       {
-        State_SLV = en_start_back;
+        if(di_1 && di_2) 
+        {
+          flag_motion = fl_frd_x;
+          s_frd.t_x = TimeStamp - start_time;
+          //frd_Tx = (float)s_frd.t_x; если приводить здесь иногда зависает
+        }
       }
-    }
 
-    else if(State_SLV == en_start_back && flag_motion == fl_frd_x)
-    {
-      if(di_2 && di_1)
+      else if(State_SLV == en_start_pause && flag_motion == fl_frd_x)
       {
-        flag_motion = fl_back_x;
-        s_back.t_x = TimeStamp - start_time;
-        //back_Tx = (float)s_back.t_x; если приводить здесь иногда зависает
+        if(di_1 && di_2 == 0)
+        {
+          State_SLV = en_start_back;
+        }
       }
+
+      else if(State_SLV == en_start_back && flag_motion == fl_frd_x)
+      {
+        if(di_2 && di_1)
+        {
+          flag_motion = fl_back_x;
+          s_back.t_x = TimeStamp - start_time;
+          //back_Tx = (float)s_back.t_x; если приводить здесь иногда зависает
+        }
+      }
+
+    break;
+
+    case ch_time:
+      //10.10.20 YN -\\//-
+        
+    break;
+
+    case ch_confront:
+    break;
+    
+    default:
+      di_1 = GetDi1();
+      di_2 = GetDi2();
+    break;
     }
 
   }
-  else if(intrpt_nb == 1)
+  else //-------- YN -//\\-
   {
-    intrpt_nb=0;
+    
     if(flag_Slv != 0 )
     {
       if((flag_slvrtu == 0) && (fl_slv_out==0))
@@ -1454,6 +1483,7 @@ int  f_int_fnc(int Addr)
           SetDisplayPage(ZeroPage);
           f_clr_scr_MMI();
           f_prn_begin();
+          choice = 0; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_confr)
           //-------- YN -//\\-
 
         break;
@@ -2101,6 +2131,7 @@ int f_enable_start()
     if(flag_motion != 0) flag_motion = 0; //начало с первой точки 
     if(flag_dlv_fst != 0) flag_dlv_fst = 0; //начнет с настройки тоталов
     State_SLV = en_cross; //60 регистр I8 enable подготовки расходомера 
+    choice = ch_weigher; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_confr)
   }
   return i_ret;
 }

@@ -615,7 +615,7 @@ void main(void)
   if( fabs(CL_val[1]) > Cor_max) CL_val[1]=0;
   if( fabs(CL_val_L[1]) > Cor_max) CL_val_L[1]=0;
 
-  InstallUserTimerFunction_us(5000,fun_tim_u); //01.10.20 YN was:10000 now:5000 ==0.5ms
+  InstallUserTimerFunction_us(1000,fun_tim_u); //01.10.20 YN was:10000 now:5000 ==0.5ms
 
   ///ttt/////////////////////////
   iv_msk[14] = 0xffff;
