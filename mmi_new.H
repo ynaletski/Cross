@@ -154,6 +154,14 @@ extern unsigned long ttt1_l,ttt2_l,ttt3_l;
 #define tim2()     asm{mov dx,0ff60H;in ax, dx;mov ttt2,ax}
 #define tim3()     asm{mov dx,0ff60H;in ax, dx;mov ttt3,ax}
 #define tim4()     asm{mov dx,0ff60H;in ax, dx;mov ttt4,ax}
+
+//10.10.20 YN -\\//- mks
+extern int time_s,time_b,time_3;
+
+#define time_s()     asm{mov dx,0ff60H;in ax, dx;mov time_s,ax}
+#define time_b()     asm{mov dx,0ff60H;in ax, dx;mov time_b,ax}
+//-------- YN -//\\-
+
 #define TimeStamp  *TimeTicks
 
 extern int PC_mode;

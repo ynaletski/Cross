@@ -761,17 +761,20 @@ void f_send_slv1()
 // ==================================================
 int nn_comb=0;
 
+//10.10.20 YN -\\//- для времени
 int choice=0;
 #define ch_time       1 //измерение времении пролета перекидки туда обратно
 #define ch_weigher    2 //вычисление интерполированной массы при проливке на весы
 #define ch_confront   3 //вычисление интерполированной массы и объема методом сличения
+//-------- YN -//\\-
 
 void fun_tim_u(void)
 {
   //01.10.20 YN added: Перебор в прерывании через переменную intrpt_nb 
-                    //фунцкция вызывается раз в 0.1 мс 
+                    //фунцкция вызывается раз в 0.04 мс 
+      //InstallUserTimerFunction_us(400,fun_tim_u); 400 == 0.04ms  == 40mks            
 
-  if(intrpt_nb<10) intrpt_nb++; //9 раз запускает измерение на 10-ый смотрит верхний контроллер
+  if(intrpt_nb<20) intrpt_nb++; //24 раз запускает измерение на 25-ый смотрит верхний контроллер
   else intrpt_nb=0;
 
   if(intrpt_nb != 0)
@@ -780,56 +783,111 @@ void fun_tim_u(void)
     switch (choice)
     {
     case ch_weigher:
-
-      di_1 = GetDi1();
-      di_2 = GetDi2();
+      //if(intrpt_nb % 10 == 0)
+      //{
+        di_1 = GetDi1();
+        di_2 = GetDi2();
     
-      if(State_SLV == en_start && flag_motion == 0)
-      {
-        if(di_1 && di_2) 
+        if(State_SLV == en_start && flag_motion == 0)
         {
-          flag_motion = fl_frd_x;
-          s_frd.t_x = TimeStamp - start_time;
-          //frd_Tx = (float)s_frd.t_x; если приводить здесь иногда зависает
+          if(di_1 && di_2) 
+          {
+            flag_motion = fl_frd_x;
+            s_frd.t_x = TimeStamp - start_time;
+            //frd_Tx = (float)s_frd.t_x; если приводить здесь иногда зависает
+          }
         }
-      }
 
-      else if(State_SLV == en_start_pause && flag_motion == fl_frd_x)
-      {
-        if(di_1 && di_2 == 0)
+        else if(State_SLV == en_start_pause && flag_motion == fl_frd_x)
         {
-          State_SLV = en_start_back;
+          if(di_1 && di_2 == 0)
+          {
+            State_SLV = en_start_back;
+          }
         }
-      }
 
-      else if(State_SLV == en_start_back && flag_motion == fl_frd_x)
-      {
-        if(di_2 && di_1)
+        else if(State_SLV == en_start_back && flag_motion == fl_frd_x)
         {
-          flag_motion = fl_back_x;
-          s_back.t_x = TimeStamp - start_time;
-          //back_Tx = (float)s_back.t_x; если приводить здесь иногда зависает
+           if(di_2 && di_1)
+          {
+            flag_motion = fl_back_x;
+            s_back.t_x = TimeStamp - start_time;
+            //back_Tx = (float)s_back.t_x; если приводить здесь иногда зависает
+          }
         }
-      }
+
+      //}
 
     break;
 
+    //10.10.20 YN -\\//-
     case ch_time:
-      //10.10.20 YN -\\//-
+      di_1 = GetDi1();
+      di_2 = GetDi2();  
+      switch (State_SLV)
+      {
+      case bak:
+
+        if(di_1 && flag_motion == 0 && di_2) //сошел с концевика 1 записали время
+        {
+          //Запись времени:
+          s_frd.t_old = TimeStamp;
+          time_s();
+          flag_motion = fl_frd_first;
         
+        }
+        else if (di_2 == 0 && flag_motion == fl_frd_first && di_1) //стал на концевик 2
+        {
+          //Запись времени:
+          s_frd.t_new = TimeStamp;
+          time_b();
+          flag_motion = fl_frd_second; //сбросить в dos_win после расчета
+          State_SLV = calc_vesbl; //можно сделать расчет
+        }
+        
+      break;
+
+      case vesbl:
+
+        if(di_1 && flag_motion == 0 && di_2) //сошел с концевика 2 записали время
+        {
+          //Запись времени:
+          s_back.t_old = TimeStamp;
+          time_s();
+          flag_motion = fl_frd_first;
+        }
+        else if (di_1 == 0 && flag_motion == fl_frd_first && di_2) //стал на концевик 1
+        {
+          //Запись времени:
+          s_back.t_new = TimeStamp;
+          time_b();
+          flag_motion = fl_frd_second; //сбросить в dos_win после расчета
+          State_SLV = calc_bak; //можно сделать расчет
+        }
+
+      break;
+      
+      default:
+        break;
+      }
+
+
     break;
 
     case ch_confront:
     break;
     
     default:
-      di_1 = GetDi1();
-      di_2 = GetDi2();
+      //if(intrpt_nb % 10 == 0)  //проход каждые 100мкс или 0.1мс
+      //{
+        di_1 = GetDi1();
+        di_2 = GetDi2();
+      //}
     break;
     }
 
   }
-  else //-------- YN -//\\-
+  else if(intrpt_nb == 0) //-------- YN -//\\-
   {
     
     if(flag_Slv != 0 )
@@ -1636,10 +1694,17 @@ int  f_int_fnc(int Addr)
          break;
 //--------------------------------------
         //01.10.20 YN -\\//- //установленное значение по Modbus регистр I7=666;
-        case 666:
+        case 666: //измерение на весы
         if(di_1 == 0 && di_2)  i_ret= f_enable_start();
         else  i_ret= f_disable_start();
-        //-------- YN -//\\
+        break;
+        //-------- YN -//\\-
+//--------------------------------------
+        //10.10.20 YN -\\//- //установленное значение по Modbus регистр I7=888;
+        case 888: //измерение времени хода перекидки в обоих направлениях
+        i_ret= f_time_start();
+        break;
+        //-------- YN -//\\-
 //--------------------------------------
         case 2:
          i_ret= f_stop_dlv();
@@ -2130,7 +2195,7 @@ int f_enable_start()
     s_back.mass_new=s_back.mass_x=s_back.mass_old=0.0;
     if(flag_motion != 0) flag_motion = 0; //начало с первой точки 
     if(flag_dlv_fst != 0) flag_dlv_fst = 0; //начнет с настройки тоталов
-    State_SLV = en_cross; //60 регистр I8 enable подготовки расходомера 
+    State_SLV = en_cross; //660 регистр I8 enable подготовки расходомера 
     choice = ch_weigher; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_confr)
   }
   return i_ret;
@@ -2148,13 +2213,32 @@ int f_disable_start()
     if(flag_motion != 0) flag_motion = 0;
     if(flag_dlv_fst != 0) flag_dlv_fst = 0; //начало с первой точки 
     if(sw_dlv_liq != 0) sw_dlv_liq = 0; //начнет с настройки тоталов
-    State_SLV = dis_cross; //61 регистр I8 disable подготовки расходомера перекидка в не правильном положении
+    State_SLV = dis_cross; //661 регистр I8 disable подготовки расходомера перекидка в не правильном положении
     //здесь надо остановить счет тоталов
   }
   return i_ret;
 }
 //-------- YN -//\\-
 
+//--------------------------------------
+  //10.10.20 YN -\\//-
+  int f_time_start()
+  {
+    int i_ret;
+    i_ret=0;
+    if(FL_err)  i_ret=RTU_Slv_err; //!!!! Если висит ошибка то действия пропускаются!!!!!!!!
+    else
+    {
+      sw_mmi=888;
+      frd_Tx=back_Tx=0.0;
+      s_frd.t_x=s_back.t_x=0;
+      if(flag_motion != 0) flag_motion = 0; //начало с первой точки
+      State_SLV = en_time; //880 регистр I8 режим измерения времени пролета перекидки
+      choice = ch_time;
+    }
+    return i_ret;
+  }
+  //-------- YN -//\\-
 
 //--------------------------------------
 int f_acces_page()

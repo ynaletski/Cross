@@ -1497,18 +1497,18 @@ void f_MVD_rd(int ii)
         }
      */
         //рассчитывает падение давления вследствие скорости
-        //01.10.20 YN s_MVD[0].PressB= FctBern*s_MVD[0].FlowM*s_MVD[0].FlowM/s_MVD[0].Dens;
+        //02.10.20 YN s_MVD[0].PressB= FctBern*s_MVD[0].FlowM*s_MVD[0].FlowM/s_MVD[0].Dens;
 
         //рассчитывает s_MVD[0].Compos и s_MVD[0].PressG
 //      f_get_pressDT(s_MVD[0].Dens,s_MVD[0].Temp);
 //      s_MVD[0].PressG=0;
 
-        //01.10.20 YN f_prep_int_MassF();
+        //02.10.20 YN f_prep_int_MassF();
 
 
  //     if( mode_refD == 1 )
         {
-        //01.10.20 YN  f_cnt_DnsA();
+        //02.10.20 YN  f_cnt_DnsA();
         }
 
 //        f_prep_int_dens();
@@ -1522,11 +1522,11 @@ void f_MVD_rd(int ii)
 //      if((Delta[0].status !=0) ||  (ComSK[0].status !=0) )
 
 
-        //01.10.20 YN f_reg_D(); // регулятор запаса по кавитации
+        //02.10.20 YN f_reg_D(); // регулятор запаса по кавитации
 
-        //01.10.20 YN f_reg_F(); // регулятор расхода
+        //02.10.20 YN f_reg_F(); // регулятор расхода
 
-        //01.10.20 YN f_flow_chk();
+        //02.10.20 YN f_flow_chk();
 
         fl_rd_err=1;
         fl_MI=1;
@@ -2734,7 +2734,7 @@ int nn=0;
       if(s_MVD[nn].Dens > 0.00000002) s_MVD[nn].FlowV=s_MVD[nn].FlowM/(s_MVD[nn].Dens/1000.);
         tim_snd_MVD=TimeStamp;
 
-       //01.10.20 YN if(fl_GO)
+       //02.10.20 YN if(fl_GO)
        {
         kkk= (float)MVD[0].pool_time/3600000. ;
 
@@ -2752,26 +2752,26 @@ int nn=0;
         //-------- YN -//\\-
 
         //рассчитывает падение давления вследствие скорости
-        //01.10.20 YN s_MVD[0].PressB= FctBern*s_MVD[0].FlowM*s_MVD[0].FlowM/s_MVD[0].Dens;
+        //02.10.20 YN s_MVD[0].PressB= FctBern*s_MVD[0].FlowM*s_MVD[0].FlowM/s_MVD[0].Dens;
 
 
-        //01.10.20 YN f_prep_int_MassF();
+        //02.10.20 YN f_prep_int_MassF();
 
    //   if( mode_refD == 1 )
         {
-        //01.10.20 YN   f_cnt_DnsA();
+        //02.10.20 YN   f_cnt_DnsA();
         }
 
         flag_mvd_fst=0;
 
 
-        //01.10.20 YN f_reg_D(); // регулятор запаса по кавитации
+        //02.10.20 YN f_reg_D(); // регулятор запаса по кавитации
 
-        //01.10.20 YN f_reg_F(); // регулятор расхода
+        //02.10.20 YN f_reg_F(); // регулятор расхода
 
 
 
-        //01.10.20 YN f_flow_chk();
+        //02.10.20 YN f_flow_chk();
 
         fl_rd_err=1;
         fl_MI=1;
@@ -3555,9 +3555,10 @@ void f_lin_intrpl()
     if(flag_motion == fl_frd_x && s_frd.mass_new > s_frd.mass_old &&
                     s_frd.t_new > s_frd.t_old && s_frd.t_new > s_frd.t_x)
     {
-      State_SLV = en_start_pause;
+      //State_SLV = en_start_pause;
       frd_Tx = (float)s_frd.t_x;
       s_frd.mass_x = s_frd.mass_old + ((s_frd.mass_new-s_frd.mass_old) * ((frd_Tx-frd_T1) / (frd_T2-frd_T1)));
+      State_SLV = en_start_pause;
       goto end;
     }
 

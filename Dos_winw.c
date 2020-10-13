@@ -5237,8 +5237,108 @@ MmiGotoxy(0,15);
   break;
 
   //-------- YN -//\\-
+ //========================================
 
+  //10.10.20 YN -\\//-
 
+  case 888:
+    f_clr_scr_MMI();
+    SetDisplayPage(EmptPage);
+    MmiGotoxy(0,0);    MmiPuts("   Режим измерения времени    " );
+    if (di_1 == 0 && di_2)
+    {
+      State_SLV = bak;
+    }
+    else if(di_1 && di_2 == 0)
+    {
+      State_SLV = vesbl;
+    }
+    sw_mmi=8888;
+
+  break;
+
+//=============== 
+
+  case 8888:
+
+    if(key==ESC)   // переход на начальную страницу
+    {
+      CMD_IN = 0; //регистр I7
+      State_SLV = Cmd_brk;  //регистр I8
+      goto mm00;
+    }
+
+    if(State_SLV == calc_vesbl) //Делаем расчет
+    {
+      time_3 = time_b-time_s-10;
+      s_frd.t_x = s_frd.t_new - s_frd.t_old;
+      if(time_3<0)
+      {
+        time_3+=10000; s_frd.t_x-=1;
+      }
+      frd_Tx = s_frd.t_x*1000+ (float)(time_3)/10.;
+
+      MmiGotoxy(0,6);  
+      MmiPrintf("Бак-весы: %f",frd_Tx);
+
+      MmiGotoxy(0,7);  
+      MmiPrintf("Tb: %d Ts: %d",time_b,time_s);
+
+      MmiGotoxy(0,8);  
+      MmiPrintf("Tl2: %ld",s_frd.t_new);
+
+      MmiGotoxy(0,9);  
+      MmiPrintf("Tl1: %ld",s_frd.t_old);
+
+      flag_motion = 0; //сбросить в dos_win после расчета
+      State_SLV = vesbl;
+    }
+    else if(State_SLV == calc_bak) //Делаем расчет
+    {
+      time_3 = time_b-time_s-10;
+      s_back.t_x = s_back.t_new - s_back.t_old;
+      if(time_3<0)
+      {
+        time_3+=10000; s_back.t_x-=1;
+      }
+      back_Tx = s_back.t_x*1000+ (float)(time_3)/10.;
+
+      MmiGotoxy(0,11);  
+      MmiPrintf("Весы-бак: %f",back_Tx);
+
+      MmiGotoxy(0,12);  
+      MmiPrintf("Tb: %d Ts: %d",time_b,time_s);
+
+      MmiGotoxy(0,13);  
+      MmiPrintf("Tl2: %ld",s_back.t_new);
+
+      MmiGotoxy(0,14);  
+      MmiPrintf("Tl1: %ld",s_back.t_old);
+
+      flag_motion = 0; //сбросить в dos_win после расчета
+      State_SLV = bak;
+    }
+
+    MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);
+
+    if(di_1 == 0 && di_2)
+    {
+      MmiGotoxy(0,4);MmiPuts("Положение перекидки:  Бак     ");
+    }
+    else if(di_1 && di_2)
+    {
+      MmiGotoxy(0,4);MmiPuts("Положение перекидки:   ???    ");
+    }
+    else if(di_1 && di_2 == 0)
+    {
+      MmiGotoxy(0,4);MmiPuts("Положение перекидки:  Весы    ");
+    }
+
+    MmiGotoxy(0,15);   MmiPuts("                 ESC - выход  ");
+
+  break;
+
+  //-------- YN -//\\-
  //========================================
     case 211:
 

@@ -375,6 +375,10 @@ int f_cycle1()
 
 /* ---- main ------------------------------------------------------------- */
 
+  //10.10.20 YN -\\//- для времянки 
+  int time_s,time_b,time_3;
+  //-------- YN -//\\-
+
   int ttt1,ttt2,ttt3,ttt4;
   int itt1,itt2,itt3,itt4;
   long int rltt1,rltt2,rltt3,rltt4;
@@ -615,7 +619,7 @@ void main(void)
   if( fabs(CL_val[1]) > Cor_max) CL_val[1]=0;
   if( fabs(CL_val_L[1]) > Cor_max) CL_val_L[1]=0;
 
-  InstallUserTimerFunction_us(1000,fun_tim_u); //01.10.20 YN was:10000 now:5000 ==0.5ms
+  InstallUserTimerFunction_us(500,fun_tim_u); //01.10.20 YN was:10000 now:400 ==0.04ms
 
   ///ttt/////////////////////////
   iv_msk[14] = 0xffff;
