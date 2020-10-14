@@ -765,16 +765,16 @@ int nn_comb=0;
 int choice=0;
 #define ch_time       1 //измерение времении пролета перекидки туда обратно
 #define ch_weigher    2 //вычисление интерполированной массы при проливке на весы
-#define ch_confront   3 //вычисление интерполированной массы и объема методом сличения
+#define ch_compare    3 //вычисление интерполированной массы и объема методом сличения
 //-------- YN -//\\-
 
 void fun_tim_u(void)
 {
   //01.10.20 YN added: Перебор в прерывании через переменную intrpt_nb 
-                    //фунцкция вызывается раз в 0.04 мс 
-      //InstallUserTimerFunction_us(400,fun_tim_u); 400 == 0.04ms  == 40mks            
+                    //фунцкция вызывается раз в 0.05 мс 
+      //InstallUserTimerFunction_us(400,fun_tim_u); 500 == 0.05ms  == 50mks            
 
-  if(intrpt_nb<20) intrpt_nb++; //24 раз запускает измерение на 25-ый смотрит верхний контроллер
+  if(intrpt_nb<20) intrpt_nb++; //19 раз запускает измерение на 20-ый смотрит верхний контроллер
   else intrpt_nb=0;
 
   if(intrpt_nb != 0)
@@ -819,7 +819,7 @@ void fun_tim_u(void)
       //}
 
     break;
-
+//**************************************************************//**************************************************************
     //10.10.20 YN -\\//-
     case ch_time:
       di_1 = GetDi1();
@@ -866,15 +866,33 @@ void fun_tim_u(void)
         }
 
       break;
-      
-      default:
-        break;
+      }
+    break;
+//**************************************************************//**************************************************************
+    case ch_compare:
+
+      di_2 = GetDi2();
+
+    if(State_SLV == en_cmpr_strt && flag_motion == 0)
+    {
+
+      if(di_2 == 0)  //di_2 включили
+      {
+        flag_motion = fl_frd_x;
+        s_frd.t_x = TimeStamp - start_time;
       }
 
+    }
 
-    break;
+    else if(State_SLV == en_cmpr_cnt && flag_motion == fl_frd_x)
+    {
+      if(di_2)
+      {
+          flag_motion = fl_back_x;
+          s_back.t_x = TimeStamp - start_time;
+      }
+    }
 
-    case ch_confront:
     break;
     
     default:
@@ -1706,6 +1724,12 @@ int  f_int_fnc(int Addr)
         break;
         //-------- YN -//\\-
 //--------------------------------------
+        //13.10.20 YN -\\//- //установленное значение по Modbus регистр I7=888;
+        case 999: //измерение времени хода перекидки в обоих направлениях
+        if(di_1 == 0 && di_2) i_ret= f_cmpr_start();
+        else i_ret= f_dis_cmpr_strt();
+        break;
+//--------------------------------------
         case 2:
          i_ret= f_stop_dlv();
          break;
@@ -2196,7 +2220,7 @@ int f_enable_start()
     if(flag_motion != 0) flag_motion = 0; //начало с первой точки 
     if(flag_dlv_fst != 0) flag_dlv_fst = 0; //начнет с настройки тоталов
     State_SLV = en_cross; //660 регистр I8 enable подготовки расходомера 
-    choice = ch_weigher; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_confr)
+    choice = ch_weigher; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_compare)
   }
   return i_ret;
 }
@@ -2214,7 +2238,6 @@ int f_disable_start()
     if(flag_dlv_fst != 0) flag_dlv_fst = 0; //начало с первой точки 
     if(sw_dlv_liq != 0) sw_dlv_liq = 0; //начнет с настройки тоталов
     State_SLV = dis_cross; //661 регистр I8 disable подготовки расходомера перекидка в не правильном положении
-    //здесь надо остановить счет тоталов
   }
   return i_ret;
 }
@@ -2234,10 +2257,69 @@ int f_disable_start()
       s_frd.t_x=s_back.t_x=0;
       if(flag_motion != 0) flag_motion = 0; //начало с первой точки
       State_SLV = en_time; //880 регистр I8 режим измерения времени пролета перекидки
-      choice = ch_time;
+      choice = ch_time; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_compare)
     }
     return i_ret;
   }
+  //-------- YN -//\\-
+
+//--------------------------------------
+  //13.10.20 YN -\\//-
+  int f_cmpr_start()
+  {
+    int i_ret;
+    i_ret=0;
+    if(FL_err)  i_ret=RTU_Slv_err; //!!!! Если висит ошибка то действия пропускаются!!!!!!!!
+    else
+    {
+
+      s_frd.t_new=s_frd.t_x=s_frd.t_old=0;
+      frd_T1=frd_T2=frd_Tx=0.0;
+      s_back.t_new=s_back.t_x=s_back.t_old=0;
+      back_T1=back_T2=back_Tx=0.0;
+      s_frd.mass_new=s_frd.mass_x=s_frd.mass_old=0.0;
+      s_back.mass_new=s_back.mass_x=s_back.mass_old=0.0;
+      s_frd.vol_new=s_frd.vol_x=s_frd.vol_old=0.0;
+      s_back.vol_new=s_back.vol_x=s_back.vol_old=0.0;
+
+      sw_mmi=999;
+      
+      State_SLV = en_cmpr; //880 регистр I8 режим сличения
+      
+      choice = ch_compare; //выбор метода в прерывании весы (ch_weigher), время (ch_time) или сличение (ch_compare)
+    }
+    return i_ret;
+  }
+
+//===========================
+
+int f_dis_cmpr_strt()
+{
+  int i_ret;
+  i_ret=0;
+  if(FL_err)  i_ret=RTU_Slv_err; //!!!! Если висит ошибка то действия пропускаются!!!!!!!!
+  else
+  {
+    //sw_fst=0; //вроде не надо
+    sw_mmi=997;
+
+    s_frd.t_new=s_frd.t_x=s_frd.t_old=0;
+    frd_T1=frd_T2=frd_Tx=0.0;
+    s_back.t_new=s_back.t_x=s_back.t_old=0;
+    back_T1=back_T2=back_Tx=0.0;
+    s_frd.mass_new=s_frd.mass_x=s_frd.mass_old=0.0;
+    s_back.mass_new=s_back.mass_x=s_back.mass_old=0.0;
+    s_frd.vol_new=s_frd.vol_x=s_frd.vol_old=0.0;
+    s_back.vol_new=s_back.vol_x=s_back.vol_old=0.0;
+
+    if(flag_motion != 0) flag_motion = 0;
+    if(flag_dlv_fst != 0) flag_dlv_fst = 0; //начало с первой точки 
+    if(sw_dlv_liq != 0) sw_dlv_liq = 0; //начнет с настройки тоталов
+    State_SLV = dis_cmpr; //991 регистр I8 disable не правильноe di_1
+  }
+  return i_ret;
+}
+
   //-------- YN -//\\-
 
 //--------------------------------------

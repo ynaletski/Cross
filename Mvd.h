@@ -102,8 +102,14 @@ struct s_mass_time
     long int t_old; //T1
     long int t_x;   //Tx
     long int t_new; //T2
+    //13.10.20 YN -\\//-
+    float vol_old;  //V1
+    float vol_x;    //Vx
+    float vol_new;  //V2
+    //-------- YN -//\\-
 };
 void f_lin_intrpl();
+void f_cmpr_intrpl();
 //-------- YN -//\\-
 
 struct s_MVD_dev

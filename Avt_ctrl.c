@@ -511,7 +511,7 @@ m_wait:
    // установка значения среза массового расхода для рабочего режима
    MVD_t_rslt[0]=0;
    time_t_snd=TimeStamp;
-   MmiGotoxy(0,4);    MmiPuts(" Сброс среза массового расхода");
+   MmiGotoxy(0,4);    MmiPuts("Сброс среза массового расхода");
 
    // Cutoff mass
    if( f_MVD_WR((int)0,(int)MVD_WR_F,(int) 195,(int)0,(long int) 0,cutoff_on_M) == 0)
@@ -529,18 +529,37 @@ m_wait:
    if( MVD_t_rslt[0]>0)
    {
       time_t_snd=TimeStamp;
-      MmiGotoxy(0,4);    MmiPuts("   Старт разрешен => вперед   ");
-
-      start_time = s_frd.t_old =  TimeStamp;
-      s_frd.mass_old = s_MVD[0].MassT;
+      //13.10.20 YN -\\//-
+      if(State_SLV == en_cmpr ) 
+      {
+         MmiGotoxy(0,4);    MmiPuts("Р-р подготовлен Старт разрешен");
+         start_time = s_frd.t_old =  TimeStamp;
+         s_frd.mass_old = s_MVD[0].MassT;
+         s_frd.vol_old = s_MVD[0].VolT;
+      }
+      //-------- YN -//\\-
+      else 
+      {
+         MmiGotoxy(0,4);    MmiPuts("   Старт разрешен => вперед   ");
+         start_time = s_frd.t_old =  TimeStamp;
+         s_frd.mass_old = s_MVD[0].MassT;
+      }
 
       //старт тоталайзер
       if( f_MVD_WR((int)0,(int)MVD_WR_C,(int) 2,(int)1,(long int) 0,(float)0)== 0)
       { // ошибка при отправке посылки MVD
           goto m_err_mvd;
       }
-      sw_dlv_liq=6662;
-      State_SLV = en_start; //62 регистр I8 enable старт разрешен движение вперед
+      if(State_SLV == en_cmpr ) 
+      {
+         sw_dlv_liq=999;
+         State_SLV = en_cmpr_strt; //991 регистр I8 enable старт разрешен
+      }
+      else
+      {
+         sw_dlv_liq=6662;
+         State_SLV = en_start; //662 регистр I8 enable старт разрешен движение вперед
+      }
    }
    else goto m_wait;
 
@@ -633,8 +652,77 @@ m_wait:
       sw_dlv_liq=-1;
       f_reg_cmn(10);
    }
-   goto finish;
+   if(choice == 2) goto finish;              //ch_weigher
+   else if(choice == 3) goto cmpr_finish;    //ch_compare
+//-------- YN -//\\-
+//-----------------------------
 
+//13.10.20 YN -\\//-
+   case 999:
+
+   if(key==ESC)
+   {
+      MmiGotoxy(0,4);   MmiPuts(list_avt[31]);  //" Нажата кнопка   ESC          ",//31
+      result_dlv=1; //  Нажата кнопка   ESC
+      State_SLV=Cmd_brk;
+      sw_dlv_liq=-1;
+      f_reg_cmn(10);
+   }
+   cmpr_finish:
+   if( MVD_t_rslt[0]>0)
+   {
+      MmiGotoxy(0,2);  MmiPrintf("            Di2 = %d          ",di_2);
+
+      if(State_SLV == en_cmpr_strt) 
+      {
+         MmiGotoxy(0,4);    MmiPuts("Р-р подготовлен Старт разрешен");
+      }
+      else if(State_SLV == en_cmpr_cnt)
+      {
+         MmiGotoxy(0,4);    MmiPuts("        Процесс идет          ");
+      }
+      else if (State_SLV == cmpr_end)
+      {
+         MmiGotoxy(0,4);    MmiPuts("      Измерение закончено     ");
+      }
+      
+
+      MmiGotoxy(0,5);  
+      MmiPrintf("Масса тотал:  %8f      ",s_MVD[0].MassT);
+
+      MmiGotoxy(0,6);  
+      MmiPrintf("Объем тотал:  %8f     ",s_MVD[0].VolT);
+
+      MmiGotoxy(0,7);
+      MmiPrintf("T2: %8ld   | %8ld ",s_frd.t_new,s_back.t_new);
+
+      MmiGotoxy(0,8);  
+      MmiPrintf("Tx: %8ld   | %8ld ",s_frd.t_x,s_back.t_x);
+
+      MmiGotoxy(0,9);  
+      MmiPrintf("T1: %8ld   | %8ld ",s_frd.t_old,s_back.t_old);
+
+      MmiGotoxy(0,10);  
+      MmiPrintf("M2: %8.5f   | %8.5f ",s_frd.mass_new,s_back.mass_new);
+
+      MmiGotoxy(0,11);  
+      MmiPrintf("Mx: %8.5f   | %8.5f ",s_frd.mass_x,s_back.mass_x);
+
+      MmiGotoxy(0,12);  
+      MmiPrintf("M1: %8.5f   | %8.5f ",s_frd.mass_old,s_back.mass_old);
+
+      MmiGotoxy(0,13);  
+      MmiPrintf("V2: %8.5f   | %8.5f ",s_frd.vol_new,s_back.vol_new);
+
+      MmiGotoxy(0,14);  
+      MmiPrintf("Vx: %8.5f   | %8.5f ",s_frd.vol_x,s_back.vol_x);
+
+      MmiGotoxy(0,15);  
+      MmiPrintf("V1: %8.5f   | %8.5f    ",s_frd.vol_old,s_back.vol_old);
+   }
+   else goto m_wait;
+
+   break;
 //-------- YN -//\\-
 
 //-----------------------------

@@ -388,7 +388,7 @@ int f_cycle1()
   unsigned long ttt1_l,ttt2_l,ttt3_l;
 
   //01.10.20 YN -\\//-
-  int intrpt_nb=0; // 0 or 1  очередь в прерывании 
+  int intrpt_nb=0; //очередь в прерывании 
   int di_1 = 0;
   int di_2 = 0;
   //-------- YN -//\\-

@@ -160,6 +160,11 @@ struct s_mass_time s_frd=
 0,    //long int t_old; //T1
 0,    //long int t_x;   //Tx
 0,    //long int t_new; //T2
+//13.10.20 YN -\\//-
+0.0,  //float vol_old;  //V1
+0.0,  //float vol_x;    //Vx
+0.0,  //float vol_new;  //V2
+//-------- YN -//\\-
 };  
 struct s_mass_time s_back=
 {
@@ -169,6 +174,11 @@ struct s_mass_time s_back=
 0,    //long int t_old; //T1
 0,    //long int t_x;   //Tx
 0,    //long int t_new; //T2
+//13.10.20 YN -\\//-
+0.0,  //float vol_old;  //V1
+0.0,  //float vol_x;    //Vx
+0.0,  //float vol_new;  //V2
+//-------- YN -//\\-
 };
 //-------- YN -//\\-
 
@@ -1485,8 +1495,9 @@ void f_MVD_rd(int ii)
 
         tim_snd_MVD=Tm_snd[ii];
 
-        //01.10.20 YN -\\//-
-        f_lin_intrpl();
+        //01.10.20 YN -\\//- //13.01.20
+        if(choice == 2)  f_lin_intrpl();      //ch_weigher
+        else if(choice == 3) f_cmpr_intrpl(); //ch_compare
         //-------- YN -//\\-
 
      /*
@@ -2747,8 +2758,9 @@ int nn=0;
         Sim_VolI +=ftmp;
        }
 
-        //01.10.20 YN -\\//-
-        f_lin_intrpl();
+        //01.10.20 YN -\\//- //13.01.20
+        if(choice == 2)  f_lin_intrpl();      //ch_weigher
+        else if(choice == 3) f_cmpr_intrpl(); //ch_compare
         //-------- YN -//\\-
 
         //рассчитывает падение давления вследствие скорости
@@ -3545,7 +3557,6 @@ void f_lin_intrpl()
   if(State_SLV == en_start) //62 регистр I8 enable старт разрешен для перекидки
   {
 
-
     s_frd.t_new = tim_snd_MVD - start_time;
     frd_T2 = (float)s_frd.t_new;
     s_frd.mass_new = s_MVD[0].MassT;
@@ -3617,4 +3628,72 @@ void f_lin_intrpl()
   end:
 }
 //-------- YN -//\\-
+//-----------------------------------
+ //13.10.20 YN -\\//-
+void f_cmpr_intrpl() 
+{ //метод сличения
+  if(State_SLV == en_cmpr_strt) //62 регистр I8 enable старт разрешен для измерения
+  {
+
+    s_frd.t_new = tim_snd_MVD - start_time;
+    frd_T2 = (float)s_frd.t_new;
+    s_frd.mass_new = s_MVD[0].MassT;
+    s_frd.vol_new = s_MVD[0].VolT;
+
+    //вычисление массы и объема:
+    if(flag_motion == fl_frd_x && s_frd.mass_new > s_frd.mass_old &&
+                    s_frd.t_new > s_frd.t_old && s_frd.t_new > s_frd.t_x)
+    {
+      //State_SLV = en_start_pause;
+      frd_Tx = (float)s_frd.t_x;
+      s_frd.mass_x = s_frd.mass_old + ((s_frd.mass_new-s_frd.mass_old) * ((frd_Tx-frd_T1) / (frd_T2-frd_T1)));
+      s_frd.vol_x = s_frd.vol_old + ((s_frd.vol_new-s_frd.vol_old) * ((frd_Tx-frd_T1) / (frd_T2-frd_T1)));
+      State_SLV = en_cmpr_cnt;
+      goto end1;
+    }
+
+    if(flag_motion == fl_frd_x) goto end1;
+    s_frd.t_old = s_frd.t_new;
+    frd_T1 = (float)s_frd.t_old;
+    s_frd.mass_old = s_frd.mass_new;
+    s_frd.vol_old = s_frd.vol_new;
+
+  }
+  //---------------
+
+  else if(State_SLV == en_cmpr_cnt)
+  {
+
+    s_back.t_new = tim_snd_MVD - start_time;
+    back_T2 = (float)s_back.t_new;
+    s_back.mass_new = s_MVD[0].MassT;
+    s_back.vol_new = s_MVD[0].VolT;
+
+    //вычисление массы и объема:
+    if(flag_motion == fl_back_x && s_back.mass_new > s_back.mass_old &&
+                    s_back.t_new > s_back.t_old && s_back.t_new > s_back.t_x)
+    {      
+      back_Tx = (float)s_back.t_x;
+      s_back.mass_x = s_back.mass_old + ((s_back.mass_new-s_back.mass_old) * ((back_Tx-back_T1) / (back_T2-back_T1)));
+      s_back.vol_x = s_back.vol_old + ((s_back.vol_new-s_back.vol_old) * ((back_Tx-back_T1) / (back_T2-back_T1)));
+      sw_dlv_liq = 6663; //переход к останову счета расходомера
+      State_SLV = cmpr_end;
+      goto end1;
+    }
+
+    if(flag_motion == fl_back_x) goto end1;
+    s_back.t_old = s_back.t_new;
+    back_T1 = (float)s_back.t_old;
+    s_back.mass_old = s_back.mass_new;
+    s_back.vol_old = s_back.vol_new;
+
+  }
+  //---------------
+  else if(State_SLV == Cmd_brk && flag_motion != 0) 
+  {
+    //flag_motion = 0;
+  }
+  end1:
+}
+ //-------- YN -//\-
 //-----------------------------------
