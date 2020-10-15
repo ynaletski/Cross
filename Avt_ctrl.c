@@ -684,6 +684,7 @@ m_wait:
       else if (State_SLV == cmpr_end)
       {
          MmiGotoxy(0,4);    MmiPuts("      Измерение закончено     ");
+         State_SLV = Cmd_brk;
       }
       
 

@@ -5345,7 +5345,7 @@ MmiGotoxy(0,15);
     f_clr_scr_MMI();
     SetDisplayPage(EmptPage);
     MmiGotoxy(0,0);    MmiPuts("        Режим сличения        " );
-    MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);
+    MmiGotoxy(0,2);  MmiPrintf("           Di2 = %d           ",di_2);
     MmiGotoxy(0,4);    MmiPuts("       Обнуление тоталов      " );
 
     MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");

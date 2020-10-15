@@ -684,14 +684,15 @@ m_wait:
       else if (State_SLV == cmpr_end)
       {
          MmiGotoxy(0,4);    MmiPuts("      Измерение закончено     ");
+         State_SLV = Cmd_brk;
       }
       
 
       MmiGotoxy(0,5);  
-      MmiPrintf("Масса тотал:  %8f   ",s_MVD[0].MassT);
+      MmiPrintf("Масса тотал:  %8f      ",s_MVD[0].MassT);
 
       MmiGotoxy(0,6);  
-      MmiPrintf("Объем тотал:  %8f   ",s_MVD[0].VolT);
+      MmiPrintf("Объем тотал:  %8f     ",s_MVD[0].VolT);
 
       MmiGotoxy(0,7);
       MmiPrintf("T2: %8ld   | %8ld ",s_frd.t_new,s_back.t_new);
