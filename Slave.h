@@ -33,6 +33,9 @@
 
 //-------- YN -//\\-
 
+extern unsigned long counters; //20.10.20 YN
+extern float counters_flt;     //20.10.20 YN
+
 #define CL1_SRC      (1)
 #define CL2_SRC    (0x2)
 #define Pump_MDB   (0x1)

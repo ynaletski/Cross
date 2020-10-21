@@ -4,6 +4,9 @@
 long int start_time=0;
 
 int flag_motion = 0;
+
+unsigned long counters = 0; //20.10.20 YN
+float counters_flt = 0;     //20.10.20 YN
 //-------- YN -//\\-
 
 // данные принимаемые сверху
@@ -834,6 +837,7 @@ void fun_tim_u(void)
           flag_motion = fl_frd_first;
         
         }
+  
         else if (di_2 == 0 && flag_motion == fl_frd_first && di_1) //стал на концевик 2
         {
           //Запись времени:
@@ -842,6 +846,11 @@ void fun_tim_u(void)
           flag_motion = fl_frd_second; //сбросить в dos_win после расчета
           State_SLV = calc_vesbl; //можно сделать расчет
         }
+
+        if(flag_motion == fl_frd_first) //20.10.20 YN
+        {                               //
+          counters+=1;                  //
+        }                               //
         
       break;
 
@@ -862,6 +871,11 @@ void fun_tim_u(void)
           flag_motion = fl_frd_second; //сбросить в dos_win после расчета
           State_SLV = calc_bak; //можно сделать расчет
         }
+
+        if(flag_motion == fl_frd_first) //20.10.20 YN
+        {                               //
+          counters+=1;                  //
+        }                               //
 
       break;
       }
