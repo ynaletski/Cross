@@ -560,7 +560,11 @@ struct eee_dat EE_Dat[]=
 &fict_ftmp,sizeof( fict_ftmp ),
 &fict_ftmp,sizeof( fict_ftmp ),
 &fict_ftmp,sizeof( fict_ftmp ),
-&fict_ftmp,sizeof( fict_ftmp ),
+
+//29.10.20 -\\//-
+//&fict_ftmp,sizeof( fict_ftmp ),
+&k_v, sizeof(k_v ),
+//-------- -//\\-
 
 //28.10.20 -\\//-
 //&fict_ftmp,sizeof( fict_ftmp ),

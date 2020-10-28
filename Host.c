@@ -3458,6 +3458,13 @@ struct dis_set  ds_dvsn[]=
   BIG_P,
   T_FLOAT,
   /*----------------*/
+  //29.10.20 YN -\\//-
+  &k_v,
+  0,
+  BIG_P,
+  T_FLOAT,
+  //-------- YN -//\\-
+  /*----------------*/
 };
 //-------- YN -//\\-
 
@@ -7034,7 +7041,7 @@ else
 //28.10.20 YN -\\//-
       if (!strcmp(intrpr.wrd,"DVSN" ))
         {   //'DVSN' коэффициенты(делители) для коректного расчета времени
-          f_dis_set(ds_dvsn,4,1);
+          f_dis_set(ds_dvsn,4,2); //29.10.20 YN was: f_dis_set(ds_dvsn,4,1);
           goto fin;
         }
 //-------- YN -//\\-

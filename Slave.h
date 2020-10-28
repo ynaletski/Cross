@@ -39,6 +39,12 @@ extern float counters_flt;  // = counters / k_t;
 extern float k_t; //коэффициент для времени 
 //-------- YN -//\\-    
 
+//29.10.20 YN -\\//-
+extern unsigned long cnt_vol; //счетчик прерываний для режима сличения
+extern float cnt_flt_vol;  // = cnt_vol / k_v;
+extern float k_v; //коэффициент для сличения 
+//-------- YN -//\\-
+
 #define CL1_SRC      (1)
 #define CL2_SRC    (0x2)
 #define Pump_MDB   (0x1)

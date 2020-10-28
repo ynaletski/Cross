@@ -3678,6 +3678,12 @@ void f_cmpr_intrpl()
       s_back.vol_x = s_back.vol_old + ((s_back.vol_new-s_back.vol_old) * ((back_Tx-back_T1) / (back_T2-back_T1)));
       sw_dlv_liq = 6663; //переход к останову счета расходомера
       State_SLV = cmpr_end;
+      //29.10.20 YN -\\//-
+      if(k_v != 0) cnt_flt_vol = (float)cnt_vol / k_v / 1000; //делим на 1000 так как мс а не мкс
+      back_Tx -= cnt_flt_vol;
+      cnt_vol=0;
+      cnt_flt_vol=0;
+      //-------- YN -//\\-
       goto end1;
     }
 
