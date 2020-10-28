@@ -2528,6 +2528,9 @@ char *list1_dsr[]={
 "Кл.В.Отсеч. N вых.",     // 168
 "Кл.Н.Отсеч. N вых.",     // 169
 ////////////////////////////////////////
+//28.10.20 YN -\\//-
+"Коэф. для времени",      //170
+//-------- YN -//\\-
 "",
 };
 //-------------------------------
@@ -5278,12 +5281,12 @@ MmiGotoxy(0,15);
       }
       frd_Tx = s_frd.t_x*1000+ (float)(time_3)/10.;
 
-      //frd_Tx = frd_Tx / 1.0003511;  //20.10.20 YN
-
-      counters_flt = (float)counters / 38; //20.10.20 YN
-      MmiGotoxy(0,10);                     //
-      MmiPrintf("  %f",counters_flt);      //
-      frd_Tx -= counters_flt;              //20.10.20 YN
+      //20.10.20 YN -\\//-
+      counters_flt = (float)counters / k_t;
+      MmiGotoxy(0,10);                     
+      MmiPrintf("  %f",counters_flt);      
+      frd_Tx -= counters_flt;              
+      //-------- YN -//\\-
 
       MmiGotoxy(0,6);  
       MmiPrintf("Бак-весы: %f",frd_Tx);
@@ -5299,8 +5302,10 @@ MmiGotoxy(0,15);
 
       flag_motion = 0; //сбросить в dos_win после расчета
       State_SLV = vesbl;
-      counters = 0;     //20.10.20 YN
-      counters_flt = 0; //20.10.20 YN
+      //20.10.20 YN -\\//-
+      counters = 0;     
+      counters_flt = 0; 
+      //-------- YN -//\\-
 
     }
     else if(State_SLV == calc_bak) //Делаем расчет
@@ -5313,12 +5318,12 @@ MmiGotoxy(0,15);
       }
       back_Tx = s_back.t_x*1000+ (float)(time_3)/10.;
 
-      //back_Tx = back_Tx / 1.0003511;  //20.10.20 YN
-
-      counters_flt = (float)counters / 38;      //20.10.20 YN
-      MmiGotoxy(0,10);                          //
-      MmiPrintf("  %f",counters_flt);           //
-      back_Tx -= counters_flt;                  //20.10.20 YN
+      //20.10.20 YN -\\//-
+      counters_flt = (float)counters / k_t;      
+      MmiGotoxy(0,10);                          
+      MmiPrintf("  %f",counters_flt);           
+      back_Tx -= counters_flt;      
+      //-------- YN -//\\-            
 
       MmiGotoxy(0,11);  
       MmiPrintf("Весы-бак: %f",back_Tx);
@@ -5334,8 +5339,11 @@ MmiGotoxy(0,15);
 
       flag_motion = 0; //сбросить в dos_win после расчета
       State_SLV = bak;
-      counters = 0; //20.10.20 YN
-      counters_flt = 0; //20.10.20 YN
+
+      //20.10.20 YN -\\//-
+      counters = 0; 
+      counters_flt = 0; 
+      //-------- YN -//\\- 
     }
 
     MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);

@@ -5,8 +5,12 @@ long int start_time=0;
 
 int flag_motion = 0;
 
-unsigned long counters = 0; //20.10.20 YN
-float counters_flt = 0;     //20.10.20 YN
+  //20.10.20 YN -\\//-
+  unsigned long counters = 0; //счетчик прерываний
+  float counters_flt = 0; // = counters / k_t;    
+  float k_t = 38; //коэффициент для времени
+  //-------- YN -//\\-
+
 //-------- YN -//\\-
 
 // данные принимаемые сверху
@@ -847,10 +851,12 @@ void fun_tim_u(void)
           State_SLV = calc_vesbl; //можно сделать расчет
         }
 
-        if(flag_motion == fl_frd_first) //20.10.20 YN
-        {                               //
-          counters+=1;                  //
-        }                               //
+        //20.10.20 YN -\\//-
+        if(flag_motion == fl_frd_first)
+        {                               
+          counters+=1;                  
+        }
+        //-------- YN -//\\-                               
         
       break;
 
@@ -872,10 +878,12 @@ void fun_tim_u(void)
           State_SLV = calc_bak; //можно сделать расчет
         }
 
-        if(flag_motion == fl_frd_first) //20.10.20 YN
-        {                               //
-          counters+=1;                  //
-        }                               //
+        //20.10.20 YN -\\//-
+        if(flag_motion == fl_frd_first) 
+        {                               
+          counters+=1;                  
+        }   
+        //-------- YN -//\\-
 
       break;
       }

@@ -33,8 +33,11 @@
 
 //-------- YN -//\\-
 
-extern unsigned long counters; //20.10.20 YN
-extern float counters_flt;     //20.10.20 YN
+//20.10.20 YN -\\//-
+extern unsigned long counters; //счетчик прерываний
+extern float counters_flt;  // = counters / k_t;
+extern float k_t; //коэффициент для времени 
+//-------- YN -//\\-    
 
 #define CL1_SRC      (1)
 #define CL2_SRC    (0x2)
