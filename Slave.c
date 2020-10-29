@@ -8,13 +8,13 @@ int flag_motion = 0;
   //20.10.20 YN -\\//-
   unsigned long counters = 0; //счетчик прерываний для режима времени
   float counters_flt = 0; // = counters / k_t;    
-  float k_t = 38; //коэффициент для времени
+  float k_t = 32; //коэффициент для времени
   //-------- YN -//\\-
 
   //29.10.20 YN -\\//-
   unsigned long cnt_vol; //счетчик прерываний для режима сличения
   float cnt_flt_vol;  // = cnt_vol / k_v;
-  float k_v = 38; //коэффициент для сличения 
+  float k_v = 32; //коэффициент для сличения 
   //-------- YN -//\\-
 
 //-------- YN -//\\-

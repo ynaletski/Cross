@@ -5287,7 +5287,7 @@ MmiGotoxy(0,15);
       frd_Tx = s_frd.t_x*1000+ (float)(time_3)/10.;
 
       //20.10.20 YN -\\//-
-      counters_flt = (float)counters / k_t;
+      if(k_t != 0) counters_flt = (float)counters / k_t;
       MmiGotoxy(0,10);                     
       MmiPrintf("  %f",counters_flt);      
       frd_Tx -= counters_flt;              
@@ -5324,7 +5324,7 @@ MmiGotoxy(0,15);
       back_Tx = s_back.t_x*1000+ (float)(time_3)/10.;
 
       //20.10.20 YN -\\//-
-      counters_flt = (float)counters / k_t;      
+      if(k_t != 0) counters_flt = (float)counters / k_t;      
       MmiGotoxy(0,10);                          
       MmiPrintf("  %f",counters_flt);           
       back_Tx -= counters_flt;      
