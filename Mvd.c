@@ -3679,8 +3679,22 @@ void f_cmpr_intrpl()
       sw_dlv_liq = 6663; //переход к останову счета расходомера
       State_SLV = cmpr_end;
       //29.10.20 YN -\\//-
-      if(k_v != 0) cnt_flt_vol = (float)cnt_vol / k_v / 1000; //делим на 1000 так как мс а не мкс
-      back_Tx -= cnt_flt_vol;
+        //16.02.2021 YN was: (float)cnt_vol / k_v / 1000;
+      if(k_v != 0) cnt_flt_vol = (float)cnt_vol / 38 / 1000; //делим на 1000 так как мс а не мкс
+      
+
+        //16.02.2021 YN was: back_Tx -= cnt_flt_vol;
+        //now:
+        if( back_Tx < 200000) //меньше 200 мс
+        {
+          back_Tx -= cnt_flt_vol;
+        }
+        else if( k_v != 0)
+        {
+          back_Tx *= k_v;
+        }
+
+
       cnt_vol=0;
       cnt_flt_vol=0;
       //-------- YN -//\\-

@@ -130,7 +130,7 @@ char messg[mess_lgth];
 };
 
 //01.10.20 YN -\\//-
-extern int intrpt_nb; // 0 or 1  очередь в прерывании 
+//16.02.2021 YN extern int intrpt_nb; // 0 or 1  очередь в прерывании 
 extern int di_1;
 extern int di_2;
 

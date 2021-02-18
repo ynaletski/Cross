@@ -5282,15 +5282,30 @@ MmiGotoxy(0,15);
       s_frd.t_x = s_frd.t_new - s_frd.t_old;
       if(time_3<0)
       {
-        time_3+=10000; s_frd.t_x-=1;
+        time_3+=10000; 
+        s_frd.t_x-=1;
       }
       frd_Tx = s_frd.t_x*1000+ (float)(time_3)/10.;
 
       //20.10.20 YN -\\//-
-      if(k_t != 0) counters_flt = (float)counters / k_t;
+      //16.02.2021 YN was: (float)counters / k_t;
+      if(k_t != 0) counters_flt = (float)counters / 38;
       MmiGotoxy(0,10);                     
-      MmiPrintf("  %f",counters_flt);      
-      frd_Tx -= counters_flt;              
+      MmiPrintf("  %f",counters_flt);
+
+        
+        //16.02.2021 YN was: frd_Tx -= counters_flt;  
+        //now:
+        if (frd_Tx < 200000)  //меньше 200 мс
+        {
+          frd_Tx -= counters_flt;
+        }
+        else if(k_t != 0)
+        {
+          frd_Tx *= k_t;
+        }
+
+
       //-------- YN -//\\-
 
       MmiGotoxy(0,6);  
@@ -5324,10 +5339,26 @@ MmiGotoxy(0,15);
       back_Tx = s_back.t_x*1000+ (float)(time_3)/10.;
 
       //20.10.20 YN -\\//-
-      if(k_t != 0) counters_flt = (float)counters / k_t;      
+      //16.02.2021 YN was: (float)counters / k_t;
+      if(k_t != 0) counters_flt = (float)counters / 38;      
       MmiGotoxy(0,10);                          
-      MmiPrintf("  %f",counters_flt);           
-      back_Tx -= counters_flt;      
+      MmiPrintf("  %f",counters_flt);
+
+
+
+        //16.02.2021 YN was: back_Tx -= counters_flt;     
+        //now:
+        if (back_Tx < 200000) //меньше 200 мс
+        {
+          back_Tx -= counters_flt;
+        }
+        else if(k_t != 0)
+        {
+          back_Tx *= k_t;
+        }
+
+
+
       //-------- YN -//\\-            
 
       MmiGotoxy(0,11);  

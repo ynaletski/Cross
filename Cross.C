@@ -388,7 +388,7 @@ int f_cycle1()
   unsigned long ttt1_l,ttt2_l,ttt3_l;
 
   //01.10.20 YN -\\//-
-  int intrpt_nb=0; //очередь в прерывании 
+  //16.02.2021 YN int intrpt_nb=0; //очередь в прерывании 
   int di_1 = 0;
   int di_2 = 0;
   //-------- YN -//\\-
@@ -619,7 +619,7 @@ void main(void)
   if( fabs(CL_val[1]) > Cor_max) CL_val[1]=0;
   if( fabs(CL_val_L[1]) > Cor_max) CL_val_L[1]=0;
 
-  InstallUserTimerFunction_us(500,fun_tim_u); //01.10.20 YN was:10000 now:400 ==0.04ms
+  InstallUserTimerFunction_us(500,fun_tim_u); //01.10.20 YN was:10000 now:500 ==0.05ms
 
   ///ttt/////////////////////////
   iv_msk[14] = 0xffff;
@@ -1410,7 +1410,7 @@ struct dis_set_MMI ds_list1[]=
   list1_dsr, //коэффициент для времени
   170,
   &k_t,
-  1,
+  0,      //16.02.2021 YN was: 1
   100,
   T_FLOAT,
   //-------- YN -//\\-
@@ -1418,7 +1418,7 @@ struct dis_set_MMI ds_list1[]=
   list1_dsr, //коэффициент для времени
   171,
   &k_v,
-  1,
+  0,    //16.02.2021 YN was: 1
   100,
   T_FLOAT,
   //-------- YN -//\\-

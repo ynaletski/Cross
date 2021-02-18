@@ -785,11 +785,11 @@ void fun_tim_u(void)
                     //фунцкция вызывается раз в 0.05 мс 
       //InstallUserTimerFunction_us(400,fun_tim_u); 500 == 0.05ms  == 50mks            
 
-  if(intrpt_nb<20) intrpt_nb++; //19 раз запускает измерение на 20-ый смотрит верхний контроллер
+  /*//16.02.2021 YN if(intrpt_nb<20) intrpt_nb++; //19 раз запускает измерение на 20-ый смотрит верхний контроллер
   else intrpt_nb=0;
 
   if(intrpt_nb != 0)
-  {
+  {*/
     
     switch (choice)
     {
@@ -830,7 +830,7 @@ void fun_tim_u(void)
       //}
 
     break;
-//**************************************************************//**************************************************************
+    //**************************************************************//**************************************************************
     //10.10.20 YN -\\//-
     case ch_time:
       di_1 = GetDi1();
@@ -894,7 +894,7 @@ void fun_tim_u(void)
       break;
       }
     break;
-//**************************************************************//**************************************************************
+    //**************************************************************//**************************************************************
     case ch_compare:
 
       di_2 = GetDi2();
@@ -927,7 +927,7 @@ void fun_tim_u(void)
     //-------- YN -//\\-
 
     break;
-//**************************************************************//**************************************************************
+    //**************************************************************//**************************************************************
 
     default:
       //if(intrpt_nb % 10 == 0)  //проход каждые 100мкс или 0.1мс
@@ -938,7 +938,7 @@ void fun_tim_u(void)
     break;
     }
 
-  }
+  /*//16.02.2021}
   else if(intrpt_nb == 0) //-------- YN -//\\-
   {
     
@@ -954,22 +954,8 @@ void fun_tim_u(void)
           n_bcom[ComPortSlv]=0;
         }
       }
-
-      //f_send_slv1();
-      /*
-      if(fl_slv_out != 0)
-      {
-        if( f_timer(time_snd[ComPortSlv],out_delay_slv))
-        {
-          ToComBufn(ComPortSlv,buf_tmpSR,fl_slv_out);
-          flag_slvrtu=0;
-          fl_slv_out=0;
-          //n_bcom[ComPortSlv]=0;
-        }
-      }
-      */
     }
-  }
+  }*/
 }
 
 // ==================================================
@@ -999,12 +985,24 @@ int itmp;
 //  int  hour,min,sec;
 // вводит команду из Host (PC) и интерпретирует ее по протоколу Modbus RTU
 
-         if((flag_slvrtu != 0) && (fl_slv_out==0))
+//16.02.2021 YN
+         /*if((flag_slvrtu != 0) && (fl_slv_out==0))
          {
 //          f_stor_Slv(M_RD,cb_COM[ComPortSlv],n_bcom[ComPortSlv]);
             f_intr_SlvRTU();
             flag_slvrtu=0;
+         }*/
+         //now:
+
+         if(ffgets_SlvRTU(ComPortSlv))
+         {
+          f_stor_Slv(M_RD,cb_COM[ComPortSlv],n_bcom[ComPortSlv]);
+          _fmemcpy(intrpr.bfcom,&cb_COM[ComPortSlv][0],(long int)(n_bcom[ComPortSlv]-2) );
+          n_bcom[ComPortSlv]=0;
+          f_intr_SlvRTU();
          }
+
+
 }
 /*-------------------------------------------*/
 void f_get_SlvBuf()

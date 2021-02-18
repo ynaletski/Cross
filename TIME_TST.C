@@ -40,12 +40,6 @@ void prnt(void);
 void prnt_nm(void);
 void prnt_nm1(void);
 
-void prnt(void)
-{
-  if(qwe==0) prnt_nm1();
-  else if(qwe==1) prnt_nm();
-}
-
 void prnt_nm(void)
 {
   qwe=0;
@@ -69,6 +63,42 @@ void prnt_nm1(void)
   unsigned int nm1,nm2;
 
    float time_nm1;
+
+
+int flag=0;
+
+
+void prnt(void)
+{
+  /*if(qwe==0) prnt_nm1();
+  else if(qwe==1) prnt_nm();*/
+          nm1 = GetDi1();
+          nm2 = GetDi2();
+
+          if(nm1 == 1 && flag == 0){
+            ttt1_l=*TimeTicks;
+            tim1();
+            flag = 1;
+          }
+          if(nm2 == 0 && flag == 1){
+            ttt4_l=TimeStamp;
+            tim4();
+
+            ttt_nm = ttt4-ttt1-10;
+            ttt_l_nm =ttt4_l - ttt1_l;
+
+            if(ttt_nm<0)
+            {
+             ttt_nm+=10000; ttt_l_nm-=1;
+            }
+
+            time_nm1=ttt_l_nm*1000+ (float)(ttt_nm)/10.;
+            printf("\n\rTime!!!!:%f mks",time_nm1);
+            time_nm1=0;
+            flag=3;
+          }
+}
+
 
 void main(void)
 {
@@ -106,10 +136,36 @@ void main(void)
 
 *(long int *)&(TimeStamp)=0;
 
-InstallUserTimerFunction_ms(2000, prnt);
+InstallUserTimerFunction_us(500, prnt);
 
      while(1)
      {
+         /* nm1 = GetDi1();
+          nm2 = GetDi2();
+
+          if(nm1 == 1 && flag == 0){
+            ttt1_l=*TimeTicks;
+            tim1();
+            flag = 1;
+          }
+          if(nm2 == 0 && flag == 1){
+            ttt4_l=TimeStamp;
+            tim4();
+
+            ttt_nm = ttt4-ttt1-10;
+            ttt_l_nm =ttt4_l - ttt1_l;
+
+            if(ttt_nm<0)
+            {
+             ttt_nm+=10000; ttt_l_nm-=1;
+            }
+
+            time_nm1=ttt_l_nm*1000+ (float)(ttt_nm)/10.;
+            printf("\n\rTime!!!!:%f mks",time_nm1);
+            time_nm1=0;
+            flag=3;
+          }*/
+
         if( kbhit() )
          {
           itmp=getch();
@@ -121,46 +177,9 @@ InstallUserTimerFunction_ms(2000, prnt);
           }
           else if( itmp == '1')
           {
+            flag = 0;
 
-/*iitmp2=123;
-iitmp3=98;
-
-  //    -- запись в перемнную  ttt1 значения  инкрементального
-  //    таймера с дискретой 100 ns (0.1 mks)
-  //    Timer2 CPU, используется для генерации системного
-  //     прерывания с периодом 1 мс
-  //
-  //    значения от 0 до 9999
-          tim1(); //    asm {mov dx,0ff60H;in ax, dx;mov ttt1,ax}
-
-// действие , время которого измеряется:
-          iitmp1=iitmp2*iitmp3;
-
-  //    -- запись в перемнную  ttt2 значения  таймера
-          tim2();
-
-           ttt3=ttt2-ttt1-10;  // 10 следует отнять - это время присутствует
-
-           if(ttt3 < 0) ttt3+=10000;
-           printf("\n\r integer (%d =%d*%d) time: %f mks",iitmp1,iitmp2,iitmp3,(float)(ttt3)/10. );
-*/
-//==================================
-/*dtmp2=160000000;
-dtmp3=0.01;
-
-    dtmp1=dtmp2+dtmp3;
-          printf("\n\rDouble accuracy test");
-          printf("\n\r %15lf = %15lf + %15lf",dtmp1,dtmp2,dtmp3);
-    dtmp3=dtmp1-dtmp2;
-
-          printf("\n\r %15lf = %15lf - %15lf ",dtmp3,dtmp1,dtmp2);
-
-    dtmp3=dtmp3-0.01;
-          printf("\n\rDouble accuracy test diff %20.18lf ",dtmp3);
-
-dtmp3=0.01;*/
-
-        ttt1_l=*TimeTicks;     // запись значения таймера с  дискретой 1 мс
+        ttt1_l=*TimeTicks;     // я┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜ченя┐╜я┐╜ тайя┐╜я┐╜я┐╜ я┐╜  я┐╜я┐╜я┐╜я┐╜той 1 я┐╜я┐╜
         tim1();
 
           //dtmp1=dtmp2*dtmp3;
@@ -168,7 +187,6 @@ dtmp3=0.01;*/
           Delay(61234);*/
 
           nm1 = GetDi1();
-
           nm2 = GetDi2();
 
           if (nm1==1 && nm2==2) 
@@ -187,94 +205,7 @@ dtmp3=0.01;*/
           }
           else time_nm1=0;
 
-
-
-         ttt2_l=TimeStamp;
-         tim2();
-
-           ttt3= ttt2-ttt1-10;
-           ttt3_l=ttt2_l - ttt1_l;
-
-           if(ttt3<0)
-            {
-             ttt3+=10000; ttt3_l-=1;
-            }
-           ftmp=ttt3_l*1000+ (float)(ttt3)/10.;
            printf("\n\rTime!!!!:%f mks",time_nm1);
-           printf("\n\rTime:%f mks",ftmp);
-           printf("\n\r nm1 = %d nm2 = %d",nm1,nm2);
-
-//==================================
-/*
-       ttt1_l=*TimeTicks;
-       tim1();
-
-          dtmp1=dtmp2/dtmp3;
-
-       ttt2_l=*TimeTicks;
-       tim2();
-
-           ttt3= ttt2-ttt1-10;
-           ttt3_l=ttt2_l - ttt1_l;
-
-           if(ttt3<0)
-            {
-             ttt3+=10000; ttt3_l-=1;
-            }
-           ftmp=ttt3_l*1000+ (float)(ttt3)/10.;
-           printf("\n\r double:\n\r  %15lf= %12lf / %12lf ",dtmp1,dtmp2,dtmp3);
-           printf("\n\r double (dtmp2/dtmp3) time:%f mks",ftmp);
-
-//======================================
-ftmp2=160000000;
-ftmp3=0.01;
-
-    printf("\n\r Float accuracy test");
-          ftmp1=ftmp2+ftmp3;
-       printf("\n\r %f=%f+%f ",ftmp1,ftmp2,ftmp3);
-
-ftmp3=0.01;
-
-       ttt1_l=*TimeTicks;
-       tim1();
-
-          ftmp1=ftmp2*ftmp3;
-
-       ttt2_l=*TimeTicks;
-       tim2();
-
-           ttt3= ttt2-ttt1-10;
-           ttt3_l=ttt2_l - ttt1_l;
-
-           if(ttt3<0)
-            {
-              ttt3+=10000; ttt3_l-=1;
-            }
-           ftmp=ttt3_l*1000+ (float)(ttt3)/10.;
-           printf("\n\r%f= %f * %f",ftmp1,ftmp2,ftmp3);
-           printf("\n\r float (ftmp2*ftmp3) time:%f mks",ftmp);
-
-//======================================
-       ttt1_l=*TimeTicks;
-       tim1();
-
-          ftmp1=ftmp2/ftmp3;
-
-       ttt2_l=*TimeTicks;
-       tim2();
-
-           ttt3= ttt2-ttt1-10;
-           ttt3_l=ttt2_l - ttt1_l;
-
-           if(ttt3<0)
-            {
-              ttt3+=10000; ttt3_l-=1;
-            }
-           ftmp=ttt3_l*1000+ (float)(ttt3)/10.;
-           printf("\n\r%f= %f / %f",ftmp1,ftmp2,ftmp3);
-           printf("\n\r float (ftmp2/ftmp3) time:%f mks",ftmp);
-*/
-//======================================
 
           }
              printf("\n\r>");
