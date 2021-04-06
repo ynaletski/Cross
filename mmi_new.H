@@ -8,10 +8,10 @@ void far *_MK_FP_(unsigned s,unsigned off);
 #define  WIN12   2
 #define  WIN16   3
 
-//        0 -  8x8  DOS, ¯á¥¢¤®£à ä¨ª 
+//        0 -  8x8  DOS, ï¿½á¥¢ï¿½ï¿½ï¿½ï¿½ä¨ªï¿½
 //        1 -  8x8  Windows
 //        2 - 12x12 Windows
-//        3 - 16x16 Windows, æ¨äàë
+//        3 - 16x16 Windows, ï¿½ï¿½ï¿½ï¿½
 
 struct zone_fnt {
 int xx;
@@ -47,7 +47,7 @@ void f_clr_scr_c_MMI();
 void f_rev_scr_MMI();
 int f_get_nb( long int baud);
 
-#define n_bufcom 200  // ¤«¨­  ¡ãä¥à  ª®¬ ­¤ë
+#define n_bufcom 200  // ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 #define MMI_KBD   1
 #define MMI_PG    2
@@ -148,8 +148,8 @@ extern unsigned long ttt1_l,ttt2_l,ttt3_l;
 
 #define puts   puts_host
 
-// § ¯¨áë¢ ¥â â¥ªãé¥¥ §­ ç¥­¨¥ â ©¬¥à  ¢ ¯à¥¤¥« å 1 ¬á ¢ 100 ns ¥¤¨­¨æ å
-// §­ ç¥­¨¥ ®â 0 ¤® 9999
+// ï¿½ï¿½ï¿½ï¿½ï¿½ë¢ ï¿½ï¿½ â¥ªï¿½é¥¥ ï¿½ï¿½ï¿½ç¥­ï¿½ï¿½ â ©ï¿½ï¿½ï¿½ ï¿½ ï¿½à¥¤ï¿½ï¿½ï¿½ï¿½ 1 ï¿½ï¿½ ï¿½ 100 ns ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+// ï¿½ï¿½ï¿½ç¥­ï¿½ï¿½ ï¿½ï¿½ 0 ï¿½ï¿½ 9999
 #define tim1()     asm{mov dx,0ff60H;in ax, dx;mov ttt1,ax}
 #define tim2()     asm{mov dx,0ff60H;in ax, dx;mov ttt2,ax}
 #define tim3()     asm{mov dx,0ff60H;in ax, dx;mov ttt3,ax}
@@ -185,7 +185,7 @@ extern char sw_ver[20];
 extern char sw_ver1[20];
 
 //--------------------------------
-struct dis_set_MMI  /* áâàãªâãà  ¤«ï ®â®¡à ¦¥­¨ï-¢¢®¤  §­ ç¥­¨© ¢ MMI */
+struct dis_set_MMI  /* ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½â®¡à ¦ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ç¥­ï¿½ï¿½ ï¿½ MMI */
 {
  char **descr;
  int ind;
@@ -222,7 +222,7 @@ void f_print_dd();
 void f_one_sec();
 void f_mmi_err();
 extern long int scom_tim[5];
-extern long int Tm_snd[];
+extern unsigned long Tm_snd[]; //extern long int Tm_snd[];
 
 extern unsigned long int one_sec_time;
 extern int flag_Serv;

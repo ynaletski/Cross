@@ -1,7 +1,7 @@
 
     //
-    // SIM0  1  -- разрешение работы (для отладки) без расходомера
-    // SIM0  0  -- будет выдаваться ошибка при старте отпуска   if(MVD[ii].status == 0)
+    // SIM0  1  -- разя┐╜шеня┐╜я┐╜ рабя┐╜я┐╜я┐╜ (я┐╜я┐╜я┐╜ я┐╜тлая┐╜я┐╜я┐╜) я┐╜я┐╜я┐╜ я┐╜я┐╜ходя┐╜я┐╜я┐╜я┐╜
+    // SIM0  0  -- я┐╜удея┐╜ я┐╜ыдая┐╜я┐╜я┐╜я┐╜я┐╜я┐╜ я┐╜шибя┐╜я┐╜ я┐╜я┐╜ я┐╜я┐╜я┐╜я┐╜ я┐╜я┐╜я┐╜ска   if(MVD[ii].status == 0)
     //
 
 #define   SIM0  1
@@ -64,7 +64,7 @@ int f_reset_zer_MVD();
 extern struct s_icp_dev MVD[];
 extern struct COM_rqst MVD_Rqst[];
 
-extern int MVD_fn[];     // регистр функций драйвера
+extern int MVD_fn[];     // регя┐╜я┐╜я┐╜я┐╜ я┐╜ункций я┐╜райя┐╜я┐╜я┐╜
 extern int MVD_fl[];
 
 #define MVD_RD_I   1
@@ -99,9 +99,9 @@ struct s_mass_time
     float mass_old; //M1
     float mass_x;   //Mx
     float mass_new; //M2
-    long int t_old; //T1
-    long int t_x;   //Tx
-    long int t_new; //T2
+    unsigned long t_old; //T1
+    unsigned long t_x;   //Tx
+    unsigned long t_new; //T2
     //13.10.20 YN -\\//-
     float vol_old;  //V1
     float vol_x;    //Vx
@@ -253,7 +253,7 @@ extern struct s_mass_time s_back;
 
 extern int mode_mvd;
 
-extern int sw_MMI_cur; // начальная строка на дисплее MMI
+extern int sw_MMI_cur; // я┐╜я┐╜чальная┐╜ я┐╜я┐╜рокя┐╜ я┐╜я┐╜ я┐╜я┐╜спля┐╜я┐╜ MMI
 extern int sw_MMI_lim;
 extern int sw_mvd_m1;
 void f_MVD_M1();

@@ -619,7 +619,7 @@ void main(void)
   if( fabs(CL_val[1]) > Cor_max) CL_val[1]=0;
   if( fabs(CL_val_L[1]) > Cor_max) CL_val_L[1]=0;
 
-  InstallUserTimerFunction_us(500,fun_tim_u); //01.10.20 YN was:10000 now:500 ==0.05ms
+  InstallUserTimerFunction_us(2000,fun_tim_u); //01.10.20 YN was:10000 now:500 ==0.05ms
 
   ///ttt/////////////////////////
   iv_msk[14] = 0xffff;
@@ -645,7 +645,7 @@ printf("\n\rExit\n\r");
 /* ================================================== */
 int last_out[5]={-1,-1,-1,-1,-1};
 long int scom_tim[5]={1,1,1,1,1};
-long int Tm_snd[5]= {0,0,0,0,0};
+unsigned long Tm_snd[5]= {0,0,0,0,0};// long int Tm_snd[5]= {0,0,0,0,0};
 
 void ServiceCOM ( int ii)
 /*

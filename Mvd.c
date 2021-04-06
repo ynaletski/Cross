@@ -157,9 +157,9 @@ struct s_mass_time s_frd=
 0.0,  //float mass_old; //M1
 0.0,  //float mass_x;   //Mx
 0.0,  //float mass_new; //M2
-0,    //long int t_old; //T1
-0,    //long int t_x;   //Tx
-0,    //long int t_new; //T2
+0,    //unsigned long t_old; //T1
+0,    //unsigned long t_x;   //Tx
+0,    //unsigned long t_new; //T2
 //13.10.20 YN -\\//-
 0.0,  //float vol_old;  //V1
 0.0,  //float vol_x;    //Vx
@@ -171,9 +171,9 @@ struct s_mass_time s_back=
 0.0,  //float mass_old; //M1
 0.0,  //float mass_x;   //Mx
 0.0,  //float mass_new; //M2
-0,    //long int t_old; //T1
-0,    //long int t_x;   //Tx
-0,    //long int t_new; //T2
+0,    //unsigned long t_old; //T1
+0,    //unsigned long t_x;   //Tx
+0,    //unsigned long t_new; //T2
 //13.10.20 YN -\\//-
 0.0,  //float vol_old;  //V1
 0.0,  //float vol_x;    //Vx
@@ -1338,7 +1338,7 @@ int f_get_intS( char *buf)
 }
 //-----------------------------------------
 int ModeFill=F_Mass;
-long int tim_snd_MVD;
+unsigned long tim_snd_MVD; //long int tim_snd_MVD;
 long int lerr_MVD=0;
 float VolI_beg=0;
 
@@ -3557,14 +3557,15 @@ void f_lin_intrpl()
   if(State_SLV == en_start) //62 регистр I8 enable старт разрешен для перекидки
   {
 
-    s_frd.t_new = tim_snd_MVD - start_time;
-    frd_T2 = (float)s_frd.t_new;
+    //05.04.2021 YN s_frd.t_new = tim_snd_MVD - start_time;
+    frd_T2 = (float)(tim_snd_MVD - start_time);//05.04.2021 YN frd_T2 = (float)s_frd.t_new;
     s_frd.mass_new = s_MVD[0].MassT;
 
-
     //вычисление массы s_frd.mass_x методом линейной интерполяции движение перекидки вперед(к весам)
-    if(flag_motion == fl_frd_x && s_frd.mass_new > s_frd.mass_old &&
-                    s_frd.t_new > s_frd.t_old && s_frd.t_new > s_frd.t_x)
+    if(flag_motion == fl_frd_x && 
+                      s_frd.mass_new > s_frd.mass_old &&
+                      //frd_T2 > frd_T1 && //05.04.2021 YN s_frd.t_new > s_frd.t_old && 
+                      frd_T2 > s_frd.t_x > frd_T1) //frd_T2 > s_frd.t_x) //05.04.2021 YN s_frd.t_new > s_frd.t_x)
     {
       //State_SLV = en_start_pause;
       frd_Tx = (float)s_frd.t_x;
@@ -3575,8 +3576,9 @@ void f_lin_intrpl()
 
 
     if(flag_motion == fl_frd_x) goto end;
-    s_frd.t_old = s_frd.t_new;
-    frd_T1 = (float)s_frd.t_old;
+
+    //05.04.2021 YN s_frd.t_old = s_frd.t_new;
+    frd_T1 = frd_T2;//05.04.2021 YN frd_T1 = (float)s_frd.t_old;
     s_frd.mass_old = s_frd.mass_new;
 
 
@@ -3585,8 +3587,8 @@ void f_lin_intrpl()
   //---------------
   else if(State_SLV == en_start_pause) //63 регистр I8 enable старт на паузе пока не дойдет до второго концевика
   {
-    s_back.t_old = tim_snd_MVD - start_time;
-    back_T1 = (float)s_back.t_old;
+    //05.04.2021 YN s_back.t_old = tim_snd_MVD - start_time;
+    back_T1 = (float) (tim_snd_MVD - start_time);//05.04.2021 YN (float)s_back.t_old;
     s_back.mass_old = s_MVD[0].MassT;
   }
   //---------------
@@ -3594,15 +3596,15 @@ void f_lin_intrpl()
   else if(State_SLV == en_start_back) //64 регистр I8 enable старт разрешен для перекидки в обратном направлении
   {
 
-
-    s_back.t_new = tim_snd_MVD - start_time;
-    back_T2 = (float)s_back.t_new;
+    //05.04.2021 YN s_back.t_new = tim_snd_MVD - start_time;
+    back_T2 = (float) (tim_snd_MVD - start_time);//05.04.2021 YN (float)s_back.t_new;
     s_back.mass_new = s_MVD[0].MassT;
 
-
     //вычисление массы s_frd.mass_x методом линейной интерполяции движение перекидки назад(в бак)
-    if(flag_motion == fl_back_x && s_back.mass_new > s_back.mass_old &&
-                    s_back.t_new > s_back.t_old && s_back.t_new > s_back.t_x)
+    if(flag_motion == fl_back_x && 
+                      s_back.mass_new > s_back.mass_old &&
+                      //back_T2 > back_T1 && //05.04.2021 YN s_back.t_new > s_back.t_old && 
+                      back_T2 > back_Tx > back_T1)//back_T2 > back_Tx) //05.04.2021 YN s_back.t_new > s_back.t_x)
     {      
       back_Tx = (float)s_back.t_x;
       s_back.mass_x = s_back.mass_old + ((s_back.mass_new-s_back.mass_old) * ((back_Tx-back_T1) / (back_T2-back_T1)));
@@ -3613,8 +3615,8 @@ void f_lin_intrpl()
 
 
     if(flag_motion == fl_back_x) goto end;
-    s_back.t_old = s_back.t_new;
-    back_T1 = (float)s_back.t_old;
+    //05.04.2021 YN s_back.t_old = s_back.t_new;
+    back_T1 = back_T2;//05.04.2021 YN (float)s_back.t_old;
     s_back.mass_old = s_back.mass_new;
 
     
@@ -3685,7 +3687,7 @@ void f_cmpr_intrpl()
 
         //16.02.2021 YN was: back_Tx -= cnt_flt_vol;
         //now:
-        if( back_Tx < 200000) //меньше 200 мс
+        if( back_Tx < 200000) // 200 ms
         {
           back_Tx -= cnt_flt_vol;
         }
