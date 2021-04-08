@@ -569,6 +569,7 @@ m_wait:
 
    case 6662:
 
+   /*08.04.2021 YN 
    if(key==ESC)
    {
       MmiGotoxy(0,4);   MmiPuts(list_avt[31]);  //" Нажата кнопка   ESC          ",//31
@@ -576,10 +577,11 @@ m_wait:
       State_SLV=Cmd_brk;
       sw_dlv_liq=-1;
       f_reg_cmn(10);
-   }
+   }*/
    finish:
    if( MVD_t_rslt[0]>0)
    {
+      /*08.04.2021 YN 
       MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);
 
       if(State_SLV == en_start) 
@@ -590,12 +592,14 @@ m_wait:
       {
          MmiGotoxy(0,4);    MmiPuts("   Старт разрешен => назад    ");
       }
-      else if(State_SLV == finished)
+      else */
+      if(State_SLV == finished)
       {
          MmiGotoxy(0,4);    MmiPuts("    Измерение => закончено    ");
          State_SLV = Cmd_brk;
       }
 
+      /*08.04.2021 YN 
       MmiGotoxy(0,5);  
       MmiPrintf("Масса тотал:  %8f   ",s_MVD[0].MassT);
 
@@ -619,7 +623,7 @@ m_wait:
       MmiGotoxy(0,13);  
       MmiPrintf("M1: %8.5f   | %8.5f ",s_frd.mass_old,s_back.mass_old);
 
-      MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");
+      MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");*/
 
    }
    else goto m_wait;
@@ -644,6 +648,7 @@ m_wait:
    //------------
 
    case 6664:
+   /*08.04.2021 YN 
    if(key==ESC)
    {
       MmiGotoxy(0,4);   MmiPuts(list_avt[31]);  //" Нажата кнопка   ESC          ",//31
@@ -651,7 +656,7 @@ m_wait:
       State_SLV=Cmd_brk;
       sw_dlv_liq=-1;
       f_reg_cmn(10);
-   }
+   }*/
    if(choice == 2) goto finish;              //ch_weigher
    else if(choice == 3) goto cmpr_finish;    //ch_compare
 //-------- YN -//\\-

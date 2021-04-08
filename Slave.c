@@ -351,7 +351,12 @@ float *list_Slv_flt[]={
 
 //30.03.2021 -\\//-
 &State_SLVf,          // 16 F1032 регистр состояния процесса
-&tolic.f,             // 17 F1034 I7-I8 управление - состояние
+//&tolic.f,             // 17 F1034 I7-I8 управление - состояние
+
+&s_frd.mass_old,      // 17 F1034 масса вперед олд 
+&s_frd.mass_new,      // 18 F1036 масса вперед нью
+&s_back.mass_old,     // 19 F1038 масса назад олд
+&s_back.mass_new,     // 20 F1040 масса назад нью
 //          --//\\--
 NULL
 
@@ -800,64 +805,65 @@ void fun_tim_u(void)
       di_2 = GetDi2();  
       switch (State_SLV)
       {
-
-      case vesbl:
-
-        if(di_1 && flag_motion == 0 && di_2) //сошел с концевика 2 записали время
-        {
-          //Запись времени:
-          s_back.t_old = TimeStamp;
-          time_s();
-          flag_motion = fl_frd_first;
-        }
-        else if (di_1 == 0 && flag_motion == fl_frd_first && di_2) //стал на концевик 1
-        {
-          //Запись времени:
-          s_back.t_new = TimeStamp;
-          time_b();
-          flag_motion = fl_frd_second; //сбросить в dos_win после расчета
-          State_SLV = calc_bak; //можно сделать расчет
-        }
-
-        //20.10.20 YN -\\//-
-        /*05.04.2021 YN if(flag_motion == fl_frd_first) 
-        {                               
-          counters+=1;                  
-        }   */
-        //-------- YN -//\\-
-
-      break;
-
-
       case bak:
-
         if(di_1 && flag_motion == 0 && di_2) //сошел с концевика 1 записали время
         {
           //Запись времени:
           s_frd.t_old = TimeStamp;
           time_s();
           flag_motion = fl_frd_first;
-        
         }
-  
         else if (di_2 == 0 && flag_motion == fl_frd_first && di_1) //стал на концевик 2
         {
           //Запись времени:
           s_frd.t_new = TimeStamp;
           time_b();
           flag_motion = fl_frd_second; //сбросить в dos_win после расчета
-          State_SLV = calc_vesbl; //можно сделать расчет
+          State_SLV = calc_vesbl; //можно сделать расчет в dos_win
         }
-
+        //05.04.2021 YN //на втором концевике без промежуточного состояния (ошибка)
+        else if(di_1 && flag_motion == 0 && di_2 == 0) 
+        {
+          State_SLV = bak_error;
+        }
         //20.10.20 YN -\\//-
         /*05.04.2021 YN if(flag_motion == fl_frd_first)
         {                               
           counters+=1;                  
         }*/
         //-------- YN -//\\-                               
-        
+      break;
+
+      case vesbl:
+        if(di_1 && flag_motion == 0 && di_2) //сошел с концевика 2 записали время
+        {
+          //Запись времени:
+          s_back.t_old = TimeStamp;
+          time_s();
+          flag_motion = fl_bck_first;
+        }
+        else if (di_1 == 0 && flag_motion == fl_bck_first && di_2) //стал на концевик 1
+        {
+          //Запись времени:
+          s_back.t_new = TimeStamp;
+          time_b();
+          flag_motion = fl_bck_second; //сбросить в dos_win после расчета
+          State_SLV = calc_bak; //можно сделать расчет в dos_win
+        }
+        //05.04.2021 YN //на втором концевике без промежуточного состояния (ошибка)
+        else if (di_1 == 0 && flag_motion == 0 && di_2)
+        {
+          State_SLV = vesbl_error;
+        }
+        //20.10.20 YN -\\//-
+        /*05.04.2021 YN if(flag_motion == fl_frd_first) 
+        {                               
+          counters+=1;                  
+        }   */
+        //-------- YN -//\\-
       break;
       }
+
     break;
     //**************************************************************//**************************************************************
     case ch_compare:

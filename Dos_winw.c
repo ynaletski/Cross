@@ -5194,13 +5194,14 @@ MmiGotoxy(0,15);
   //01.10.20 YN -\\//-
 
   case 666:
+    /*08.04.2021 YN 
     f_clr_scr_MMI();
     SetDisplayPage(EmptPage);
     MmiGotoxy(0,0);  MmiPuts("    Режим измерения массы     " );
     MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);
     MmiGotoxy(0,4);  MmiPuts("       Обнуление тоталов      " );
 
-    MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");
+    MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");*/
     sw_dlv_liq=1; //значение в функции f_dlv_liq файла avt_ctrl
     sw_mmi=6666;
   break;
@@ -5210,6 +5211,7 @@ MmiGotoxy(0,15);
   case 6666:
 
     key=f_dlv_liq(key);
+    /*08.04.2021 YN 
     if(key==ESC)   // переход на начальную страницу
     {
       CMD_IN = 0; //регистр I7
@@ -5218,7 +5220,7 @@ MmiGotoxy(0,15);
       flag_motion = 0; //в прерывании
       State_SLV = Cmd_brk;  //регистр I8
       goto mm00;
-    }
+    }*/
   break;
 
   //========================================
@@ -5277,15 +5279,14 @@ MmiGotoxy(0,15);
     }*/
 
     //05.04.2021 YN
-    if(State_SLV == en_time)
+    /*if(State_SLV == en_time)
     {
       sw_mmi=888;
     }
+    else*/
     /////////////////////////
-
-    else if(State_SLV == calc_vesbl) //Делаем расчет
+    if(State_SLV == calc_vesbl) //Делаем расчет
     {
-
       time_3 = time_b-time_s-10;
       s_frd.t_x = s_frd.t_new - s_frd.t_old;
 
@@ -5294,16 +5295,12 @@ MmiGotoxy(0,15);
         time_3+=10000; 
         s_frd.t_x-=1;
       }
-
       frd_Tx = s_frd.t_x*1000+ (float)(time_3)/10.; //возможные ошибки t_x не float
-
       //20.10.20 YN -\\//-
       //16.02.2021 YN was: (float)counters / k_t;
       /*05.04.2021 YN if(k_t != 0) counters_flt = (float)counters / 38;
       MmiGotoxy(0,10);                     
       MmiPrintf("  %f",counters_flt);*/
-
-        
         //16.02.2021 YN was: frd_Tx -= counters_flt;  
         //now:
         /*05.04.2021 YN if (frd_Tx < 200000)  //меньше 200 мс
@@ -5314,59 +5311,45 @@ MmiGotoxy(0,15);
         {
           frd_Tx *= k_t;
         }*/
-
-
       //-------- YN -//\\-
-
       /*05.04.2021 YN MmiGotoxy(0,6);  
       MmiPrintf("Бак-весы: %f",frd_Tx);
-
       MmiGotoxy(0,7);  
       MmiPrintf("Tb: %d Ts: %d",time_b,time_s);
-
       MmiGotoxy(0,8);  
       MmiPrintf("Tl2: %ld",s_frd.t_new);
-
       MmiGotoxy(0,9);  
       MmiPrintf("Tl1: %ld",s_frd.t_old);*/
-
       //20.10.20 YN -\\//-
       counters = 0;     
       counters_flt = 0; 
       //-------- YN -//\\-
       flag_motion = 0; //сбросить в dos_win после расчета
-      
-
       //05.04.2021 YN State_SLV = vesbl;
       if(di_1 && di_2 == 0)
       {
         State_SLV = vesbl;
       }
-      else State_SLV = calc_vesbl_error;
-
+      else {
+        State_SLV = calc_vesbl_error;
+      }
     }
+
     else if(State_SLV == calc_bak) //Делаем расчет
     {
-
       time_3 = time_b-time_s-10;
       s_back.t_x = s_back.t_new - s_back.t_old;
-
       if(time_3<0)
       {
         time_3+=10000; 
         s_back.t_x-=1;
       }
-
       back_Tx = s_back.t_x*1000+ (float)(time_3)/10.; //возможные ошибки t_x не float
-
       //20.10.20 YN -\\//-
       //16.02.2021 YN was: (float)counters / k_t;
       /*05.04.2021 YN if(k_t != 0) counters_flt = (float)counters / 38;      
       MmiGotoxy(0,10);                          
       MmiPrintf("  %f",counters_flt);*/
-
-
-
         //16.02.2021 YN was: back_Tx -= counters_flt;     
         //now:
         /*05.04.2021 YN if (back_Tx < 200000.0) //меньше 200 мс
@@ -5377,39 +5360,29 @@ MmiGotoxy(0,15);
         {
           back_Tx *= k_t;
         }*/
-
-
       //-------- YN -//\\-            
-
       /*05.04.2021 YN MmiGotoxy(0,11);  
       MmiPrintf("Весы-бак: %f",back_Tx);
-
       MmiGotoxy(0,12);  
       MmiPrintf("Tb: %d Ts: %d",time_b,time_s);
-
       MmiGotoxy(0,13);  
       MmiPrintf("Tl2: %ld",s_back.t_new);
-
       MmiGotoxy(0,14);  
       MmiPrintf("Tl1: %ld",s_back.t_old);*/
-
       //20.10.20 YN -\\//-
       counters = 0; 
       counters_flt = 0; 
       //-------- YN -//\\- 
       flag_motion = 0; //сбросить в dos_win после расчета
-
       //05.04.2021 YN State_SLV = bak;
       if (di_1 == 0 && di_2)
       {
         State_SLV = bak;
       }
       else State_SLV = calc_bak_error;
-
     }
 
     /*05.04.2021 YN MmiGotoxy(0,2);  MmiPrintf("     Di1 = %d  |  Di2 = %d",di_1,di_2);
-
     if(di_1 == 0 && di_2)
     {
       MmiGotoxy(0,4);MmiPuts("Положение перекидки:  Бак     ");
@@ -5422,7 +5395,6 @@ MmiGotoxy(0,15);
     {
       MmiGotoxy(0,4);MmiPuts("Положение перекидки:  Весы    ");
     }
-
     MmiGotoxy(0,15);   MmiPuts("                 ESC - выход  ");*/
 
   break;
