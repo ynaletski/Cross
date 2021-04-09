@@ -2622,6 +2622,12 @@ long int ltmp;
    }
    else return 0;
 
+
+
+//10.04.2021 YN
+       if(flag_Slv != 0)
+             f_SlaveRTU();
+
    switch(sw_mmi)
     {
      case 0: /*заголовок*/
@@ -5403,20 +5409,20 @@ MmiGotoxy(0,15);
  //========================================
   //13.10.20 YN -\\//-
   case 999:
-    f_clr_scr_MMI();
+    /*//09.04.2021 YN f_clr_scr_MMI();
     SetDisplayPage(EmptPage);
     MmiGotoxy(0,0);    MmiPuts("        Режим сличения        " );
     MmiGotoxy(0,2);  MmiPrintf("           Di2 = %d           ",di_2);
     MmiGotoxy(0,4);    MmiPuts("       Обнуление тоталов      " );
 
-    MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");
+    MmiGotoxy(0,15); MmiPuts("                 ESC - выход  ");*/
     sw_dlv_liq=1; //значение в функции f_dlv_liq файла avt_ctrl
     sw_mmi=9999;
   break;
   //=============== 
   case 9999:
     key=f_dlv_liq(key);
-    if(key==ESC)   // переход на начальную страницу
+    /* //09.04.2021 YN if(key==ESC)   // переход на начальную страницу
     {
       CMD_IN = 0; //регистр I7
       flag_dlv_fst = 0; //обнуление тоталов при первом проходе в функции f_dlv_liq
@@ -5424,7 +5430,7 @@ MmiGotoxy(0,15);
       flag_motion = 0; //в прерывании
       State_SLV = Cmd_brk;  //регистр I8
       goto mm00;
-    }
+    }*/
   break;
 //===============
   case 997:

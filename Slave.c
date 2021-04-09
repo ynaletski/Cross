@@ -353,10 +353,15 @@ float *list_Slv_flt[]={
 &State_SLVf,          // 16 F1032 регистр состояния процесса
 //&tolic.f,             // 17 F1034 I7-I8 управление - состояние
 
-&s_frd.mass_old,      // 17 F1034 масса вперед олд 
-&s_frd.mass_new,      // 18 F1036 масса вперед нью
-&s_back.mass_old,     // 19 F1038 масса назад олд
-&s_back.mass_new,     // 20 F1040 масса назад нью
+&s_frd.mass_old,      // 17 F1034 масса вперед old 
+&s_frd.mass_new,      // 18 F1036 масса вперед new
+&s_back.mass_old,     // 19 F1038 масса назад old
+&s_back.mass_new,     // 20 F1040 масса назад new
+
+&s_frd.vol_old,      // 21 F1042 масса вперед old 
+&s_frd.vol_new,      // 22 F1044 масса вперед new
+&s_back.vol_old,     // 23 F1046 масса назад old
+&s_back.vol_new,     // 24 F1048 масса назад new
 //          --//\\--
 NULL
 
@@ -872,29 +877,27 @@ void fun_tim_u(void)
 
     if(State_SLV == en_cmpr_strt && flag_motion == 0)
     {
-
       if(di_2 == 0)  //di_2 включили
       {
-        flag_motion = fl_frd_x;
         s_frd.t_x = TimeStamp - start_time;
+        flag_motion = fl_frd_x;
       }
-
     }
 
     else if(State_SLV == en_cmpr_cnt && flag_motion == fl_frd_x)
     {
       if(di_2)
       {
-          flag_motion = fl_back_x;
-          s_back.t_x = TimeStamp - start_time;
+        s_back.t_x = TimeStamp - start_time;
+        flag_motion = fl_back_x;
       }
     }
 
     //29.10.20 YN -\\//-
-    if(flag_motion == fl_frd_x)
+    /* //09.04.2021 YNif(flag_motion == fl_frd_x)
     {
       cnt_vol++;
-    }
+    }*/
     //-------- YN -//\\-
 
     break;

@@ -431,6 +431,10 @@ int f_dlv_liq(int key)
       f_wr_evt(evt_err_f+flag_rcv);
     }
 
+//10.04.2021 YN
+       if(flag_Slv != 0)
+             f_SlaveRTU();
+
   switch(sw_dlv_liq)
   {
    // начальное состояние - все клапаны закрыты,
@@ -665,17 +669,18 @@ m_wait:
 //13.10.20 YN -\\//-
    case 999:
 
-   if(key==ESC)
+   /* //09.04.2021 YN if(key==ESC)
    {
       MmiGotoxy(0,4);   MmiPuts(list_avt[31]);  //" Нажата кнопка   ESC          ",//31
       result_dlv=1; //  Нажата кнопка   ESC
       State_SLV=Cmd_brk;
       sw_dlv_liq=-1;
       f_reg_cmn(10);
-   }
+   }*/
    cmpr_finish:
    if( MVD_t_rslt[0]>0)
    {
+      /*//09.04.2021 YN
       MmiGotoxy(0,2);  MmiPrintf("            Di2 = %d          ",di_2);
 
       if(State_SLV == en_cmpr_strt) 
@@ -686,13 +691,14 @@ m_wait:
       {
          MmiGotoxy(0,4);    MmiPuts("        Процесс идет          ");
       }
-      else if (State_SLV == cmpr_end)
+      else */
+      if (State_SLV == cmpr_end)
       {
          MmiGotoxy(0,4);    MmiPuts("      Измерение закончено     ");
          State_SLV = Cmd_brk;
       }
-      
 
+/* //09.04.2021 YN
       MmiGotoxy(0,5);  
       MmiPrintf("Масса тотал:  %8f      ",s_MVD[0].MassT);
 
@@ -724,7 +730,7 @@ m_wait:
       MmiPrintf("Vx: %8.5f   | %8.5f ",s_frd.vol_x,s_back.vol_x);
 
       MmiGotoxy(0,15);  
-      MmiPrintf("V1: %8.5f   | %8.5f    ",s_frd.vol_old,s_back.vol_old);
+      MmiPrintf("V1: %8.5f   | %8.5f    ",s_frd.vol_old,s_back.vol_old);*/
    }
    else goto m_wait;
 

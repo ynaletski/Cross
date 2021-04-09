@@ -3639,15 +3639,18 @@ void f_cmpr_intrpl()
 { //метод сличения
   if(State_SLV == en_cmpr_strt) //62 регистр I8 enable старт разрешен для измерения
   {
-
+    /* //09.04.2021 YN
     s_frd.t_new = tim_snd_MVD - start_time;
-    frd_T2 = (float)s_frd.t_new;
+    frd_T2 = (float)s_frd.t_new;*/
+    frd_T2 = (float)(tim_snd_MVD - start_time);
     s_frd.mass_new = s_MVD[0].MassT;
     s_frd.vol_new = s_MVD[0].VolT;
 
     //вычисление массы и объема:
-    if(flag_motion == fl_frd_x && s_frd.mass_new > s_frd.mass_old &&
-                    s_frd.t_new > s_frd.t_old && s_frd.t_new > s_frd.t_x)
+    if(flag_motion == fl_frd_x && 
+                      s_frd.mass_new > s_frd.mass_old &&
+                      frd_T2 > frd_T1 && 
+                      frd_T2 > (float)s_frd.t_x)
     {
       //State_SLV = en_start_pause;
       frd_Tx = (float)s_frd.t_x;
@@ -3658,8 +3661,8 @@ void f_cmpr_intrpl()
     }
 
     if(flag_motion == fl_frd_x) goto end1;
-    s_frd.t_old = s_frd.t_new;
-    frd_T1 = (float)s_frd.t_old;
+
+    frd_T1 = frd_T2;
     s_frd.mass_old = s_frd.mass_new;
     s_frd.vol_old = s_frd.vol_new;
 
@@ -3668,15 +3671,18 @@ void f_cmpr_intrpl()
 
   else if(State_SLV == en_cmpr_cnt)
   {
-
+    /* //09.04.2021 YN
     s_back.t_new = tim_snd_MVD - start_time;
-    back_T2 = (float)s_back.t_new;
+    back_T2 = (float)s_back.t_new;*/
+    back_T2 = (float) (tim_snd_MVD - start_time);
     s_back.mass_new = s_MVD[0].MassT;
     s_back.vol_new = s_MVD[0].VolT;
 
     //вычисление массы и объема:
-    if(flag_motion == fl_back_x && s_back.mass_new > s_back.mass_old &&
-                    s_back.t_new > s_back.t_old && s_back.t_new > s_back.t_x)
+    if(flag_motion == fl_back_x && 
+                      s_back.mass_new > s_back.mass_old &&
+                      back_T2 > back_T1 &&
+                      back_T2 > (float)s_back.t_x)                      
     {      
       back_Tx = (float)s_back.t_x;
       s_back.mass_x = s_back.mass_old + ((s_back.mass_new-s_back.mass_old) * ((back_Tx-back_T1) / (back_T2-back_T1)));
@@ -3685,30 +3691,31 @@ void f_cmpr_intrpl()
       State_SLV = cmpr_end;
       //29.10.20 YN -\\//-
         //16.02.2021 YN was: (float)cnt_vol / k_v / 1000;
-      if(k_v != 0) cnt_flt_vol = (float)cnt_vol / 38 / 1000; //делим на 1000 так как мс а не мкс
+            //09.04.2021 YNif(k_v != 0) cnt_flt_vol = (float)cnt_vol / 38 / 1000; //делим на 1000 так как мс а не мкс
       
 
-        //16.02.2021 YN was: back_Tx -= cnt_flt_vol;
-        //now:
-        if( back_Tx < 200000) // 200 ms
-        {
-          back_Tx -= cnt_flt_vol;
-        }
-        else if( k_v != 0)
-        {
-          back_Tx *= k_v;
-        }
+            //16.02.2021 YN was: back_Tx -= cnt_flt_vol;
+            //now:
+            /* //09.04.2021 YN
+            if( back_Tx < 200000) // 200 ms
+            {
+              back_Tx -= cnt_flt_vol;
+            }
+            else if( k_v != 0)
+            {
+              back_Tx *= k_v;
+            }
 
 
-      cnt_vol=0;
-      cnt_flt_vol=0;
+            cnt_vol=0;
+            cnt_flt_vol=0;*/
       //-------- YN -//\\-
       goto end1;
     }
 
     if(flag_motion == fl_back_x) goto end1;
-    s_back.t_old = s_back.t_new;
-    back_T1 = (float)s_back.t_old;
+    //09.04.2021 YN s_back.t_old = s_back.t_new;
+    back_T1 = back_T2;//09.04.2021 YNback_T1 = (float)s_back.t_old;
     s_back.mass_old = s_back.mass_new;
     s_back.vol_old = s_back.vol_new;
 
@@ -3716,7 +3723,7 @@ void f_cmpr_intrpl()
   //---------------
   else if(State_SLV == Cmd_brk && flag_motion != 0) 
   {
-    //flag_motion = 0;
+    flag_motion = 0;
   }
   end1:
 }
