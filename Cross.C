@@ -21,7 +21,10 @@ char sw_ver[20]="N4.10 16 Feb 2018";  // COM0 COM1 COM2 COM3 COM4
 #endif
 */
 
-char sw_ver[20]="N3.26.08.08 Jun2011";
+char sw_ver[20]="N1.4 - 02 Jul 2021";
+//02.07.2021 YN char sw_ver[20]="N1.3 - 20 May 2021";
+//20.05.2021 YN char sw_ver[20]="N1.2 - 05 May 2021";
+//char sw_ver[20]="N3.26.08.08 Jun2011";
 char sw_ver1[20]="N3.10. 15 Apr 2019";
 
 unsigned long ComBaud[5]={9600,9600,9600,9600,115200};
@@ -619,7 +622,7 @@ void main(void)
   if( fabs(CL_val[1]) > Cor_max) CL_val[1]=0;
   if( fabs(CL_val_L[1]) > Cor_max) CL_val_L[1]=0;
 
-  InstallUserTimerFunction_us(2000,fun_tim_u); //01.10.20 YN was:10000 now:500 ==0.05ms
+  InstallUserTimerFunction_us(2000,fun_tim_u); //01.10.20 YN was:10000==1ms now:2000==0.2ms
 
   ///ttt/////////////////////////
   iv_msk[14] = 0xffff;

@@ -358,10 +358,14 @@ float *list_Slv_flt[]={
 &s_back.mass_old,     // 19 F1038 масса назад old
 &s_back.mass_new,     // 20 F1040 масса назад new
 
-&s_frd.vol_old,      // 21 F1042 масса вперед old 
-&s_frd.vol_new,      // 22 F1044 масса вперед new
-&s_back.vol_old,     // 23 F1046 масса назад old
-&s_back.vol_new,     // 24 F1048 масса назад new
+&s_frd.vol_old,      // 21 F1042 объем вперед old 
+&s_frd.vol_new,      // 22 F1044 объем вперед new
+&s_back.vol_old,     // 23 F1046 объем назад old
+&s_back.vol_new,     // 24 F1048 объем назад new
+
+//02.07.2021 YN
+&newMassTotal,      // 25 F1050 масса пролитая на весы расчитанная как расход * время
+
 //          --//\\--
 NULL
 
@@ -1562,6 +1566,12 @@ int  f_int_fnc(int Addr)
           sw_dlv_liq=0; //функция f_dlv_liq
           flag_motion = 0;
 
+            //02.07.2021 YN
+            /*newMassTotal = 0.0;
+            newFlagCount = 0;
+            newTimeNew = 0.0;
+            newTimeOld = 0.0;*/
+
           SetDisplayPage(ZeroPage);
           f_clr_scr_MMI();
           f_prn_begin();
@@ -2216,6 +2226,13 @@ int f_enable_start()
   else
   {
     //sw_fst=0; //вроде не надо
+
+      //02.07.2021 YN
+      newMassTotal = 0.0;
+      newFlagCount = 0;
+      newTimeNew = 0.0;
+      newTimeOld = 0.0;
+
     sw_mmi=666;
     s_frd.t_new=s_frd.t_x=s_frd.t_old=0;
     frd_T1=frd_T2=frd_Tx=0.0;

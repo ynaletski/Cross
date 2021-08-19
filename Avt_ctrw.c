@@ -522,11 +522,31 @@ m_wait:
    { // ошибка при отправке посылки MVD
       goto m_err_mvd;
    }
-   sw_dlv_liq=6661;
+
+   //20.05.2021 YN was: sw_dlv_liq=6661; now:
+   sw_dlv_liq=6660;
 
    break;
 
 //------------
+
+   //20.05.2021 YN 
+   case 6660:
+    // ожидание завершения команды установки cutoff for Mass Flow
+    if( MVD_t_rslt[0]>0)
+    {
+      MVD_t_rslt[0]=0;
+      time_t_snd=TimeStamp;
+      // установка значения среза объемного расхода для рабочего режима
+      if( f_MVD_WR((int)0,(int)MVD_WR_F,(int) 197,(int)0,(long int) 0,cutoff_on_V) == 0)
+      { // ошибка при отправке посылки MVD
+         goto m_err_mvd;
+      }
+      sw_dlv_liq=6661;
+      break;
+    }
+    else goto m_wait;
+   //------------ -//\\-
 
    case 6661:
 
@@ -547,6 +567,11 @@ m_wait:
          MmiGotoxy(0,4);    MmiPuts("   Старт разрешен => вперед   ");
          start_time = s_frd.t_old =  TimeStamp;
          s_frd.mass_old = s_MVD[0].MassT;
+         //02.07.2021 YN
+         newMassTotal = 0.0;
+         newFlagCount = 0;
+         newTimeNew = 0.0;
+         newTimeOld = 0.0;
       }
 
       //старт тоталайзер

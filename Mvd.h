@@ -85,6 +85,12 @@ extern int MVD_fl[];
 #define n_coil_b 8
 #define n_char_b 50
 
+//02.07.2021 YN
+extern float newMassTotal;
+extern int newFlagCount;
+extern float newTimeNew;
+extern float newTimeOld;
+
 //01.10.20 YN -\\//-
 
 extern float frd_T1;
